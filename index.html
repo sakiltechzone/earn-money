@@ -22,77 +22,19 @@
     * {box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent;}
     body { font-family: 'Poppins', 'Hind Siliguri', sans-serif; background: var(--bg-color); min-height: 100vh; color: var(--text-dark); }
     
-    /* --- নতুন আকর্ষণীয় হেডার স্টাইল (image_6.png অনুযায়ী) --- */
-    .header { 
-        text-align: center; 
-        margin-bottom: 25px; 
-        padding: 20px 15px; 
-        background: var(--primary-gradient); 
-        color: white;
-        box-shadow: 0 4px 15px rgba(30, 60, 114, 0.2);
-        border-bottom-left-radius: 15px;
-        border-bottom-right-radius: 15px;
-        display: flex; /* বোতামটিকে কেন্দ্রে রাখতে */
-        justify-content: center;
-        align-items: center;
-    }
+    .header { text-align: center; margin-bottom: 25px; padding: 20px 15px; background: var(--primary-gradient); color: white; box-shadow: 0 4px 15px rgba(30, 60, 114, 0.2); border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; display: flex; justify-content: center; align-items: center; }
     
-    /* glowing-title-btn এর স্টাইল image_6.png অনুযায়ী */
-    .glowing-title-btn {
-        font-family: 'Poppins', sans-serif;
-        font-size: 18px; /* টেক্সট সাইজ */
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        color: #2d3436; /* গাড় রঙের টেক্সট */
-        background: #fdcb6e; /* উজ্জ্বল হলুদ background, image_6.png এর মতো */
-        border: none;
-        border-radius: 30px; /* গোল কোণ */
-        padding: 12px 30px; /* বোতামের আকার */
-        display: flex;
-        align-items: center;
-        gap: 10px; /* আইকন এবং টেক্সটের মাঝে ফাঁকা */
-        cursor: pointer;
-        text-decoration: none;
-        box-shadow: 0 0 15px rgba(253, 203, 110, 0.7); /* প্রাথমিক হলুদ গ্লো */
-        position: relative;
-        overflow: hidden;
-        transition: transform 0.2s, box-shadow 0.3s;
-        animation: glowPulse 2s infinite; /* অ্যানিমেশন যুক্ত করা হলো */
-    }
+    .glowing-title-btn { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #2d3436; background: #fdcb6e; border: none; border-radius: 30px; padding: 12px 30px; display: flex; align-items: center; gap: 10px; cursor: pointer; text-decoration: none; box-shadow: 0 0 15px rgba(253, 203, 110, 0.7); position: relative; overflow: hidden; transition: transform 0.2s, box-shadow 0.3s; animation: glowPulse 2s infinite; }
+    .glowing-title-btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(253, 203, 110, 0.9); }
+    .glowing-title-btn i { font-size: 20px; color: #2d3436; }
 
-    /* হোভার এফেক্ট */
-    .glowing-title-btn:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 25px rgba(253, 203, 110, 0.9); /* হোভারে উজ্জ্বল গ্লো */
-    }
-
-    /* বিদ্যুতের আইকনের স্টাইল */
-    .glowing-title-btn i {
-        font-size: 20px;
-        color: #2d3436; /* আইকনের রঙ টেক্সটের মতো */
-    }
-
-    /* গ্লো অ্যানিমেশন - Pulse */
-    @keyframes glowPulse {
-        0% {
-            box-shadow: 0 0 10px rgba(253, 203, 110, 0.6);
-        }
-        50% {
-            box-shadow: 0 0 25px rgba(253, 203, 110, 0.9);
-        }
-        100% {
-            box-shadow: 0 0 10px rgba(253, 203, 110, 0.6);
-        }
-    }
+    @keyframes glowPulse { 0% { box-shadow: 0 0 10px rgba(253, 203, 110, 0.6); } 50% { box-shadow: 0 0 25px rgba(253, 203, 110, 0.9); } 100% { box-shadow: 0 0 10px rgba(253, 203, 110, 0.6); } }
     
-    /* --- ভিডিও কার্ড এবং গ্রিড --- */
     .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: 20px; max-width: 1280px; margin: 0 auto; padding: 0 15px 50px 15px; }
     
     .video-card { background: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 20px -5px rgba(0, 0, 0, 0.08); transition: all 0.3s; cursor: pointer; position: relative; border: 1px solid rgba(255,255,255,0.8); }
     .video-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.12); }
     
-    /* 🔥 থাম্বনেল সাইজ ইউটিউবের মতো 16:9 বজায় রাখা হয়েছে (padding-top: 56.25%) 🔥 */
     .thumbnail { position: relative; width: 100%; padding-top: 56.25%; overflow: hidden; background: #000; }
     .thumbnail img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
     .video-card:hover .thumbnail img.static-thumb { transform: scale(1.05); }
@@ -131,6 +73,15 @@
     
     .show-popup .popup-overlay { display: block; opacity: 1; }
     .show-popup .popup-box { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+    /* 🔥 নতুন ইন-অ্যাপ ভিডিও প্লেয়ার স্টাইল 🔥 */
+    .in-app-player { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; flex-direction: column; }
+    .player-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #111; color: white; }
+    .player-header h3 { font-size: 16px; margin: 0; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+    .close-player-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 16px; cursor: pointer; transition: 0.2s; }
+    .close-player-btn:active { transform: scale(0.9); }
+    .iframe-wrapper { flex-grow: 1; width: 100%; height: 100%; background: #000; }
+    .iframe-wrapper iframe { width: 100%; height: 100%; border: none; }
   </style>
 </head>
 <body>
@@ -161,6 +112,16 @@
     </div>
 </div>
 
+<div id="inAppPlayer" class="in-app-player">
+    <div class="player-header">
+        <h3><i class="fas fa-film" style="color: var(--accent-color);"></i> Now Playing</h3>
+        <button class="close-player-btn" onclick="closeVideoPlayer()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="iframe-wrapper">
+        <iframe id="videoIframe" src="" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+    </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
@@ -181,44 +142,33 @@
     }
     const db = firebase.database();
 
-    // অ্যাড কন্ট্রোলার প্রাথমিকভাবে ফাঁকা থাকবে, ফায়ারবেস থেকে ডেটা এলে আপডেট হবে
-    let AdController = null;
+    let AdController = window.Adsgram ? window.Adsgram.init({ blockId: "26734" }) : null;
     let currentMegaCloudLink = ""; 
     let currentAdLimit = 1; 
     let adsWatched = 0; 
 
-    // 🔥 ইউজার প্যানেলে siteConfig রিসিভ করার কোড 🔥
     db.ref('siteConfig').on('value', (snap) => {
         const config = snap.val();
         if(config) {
-            // অ্যাডমিন প্যানেল থেকে adsgramId পেলে অ্যাড কন্ট্রোলার ইনিশিয়ালাইজ হবে
             if(config.adsgramId && window.Adsgram) {
                 AdController = window.Adsgram.init({ blockId: config.adsgramId });
             }
             if(config.adLimit) {
                 currentAdLimit = parseInt(config.adLimit);
             }
-            
-            // Adsterra Popunder ইনজেক্ট করার লজিক
             if(config.headScripts) {
                 const existingContainer = document.getElementById('adsterra-script-container');
                 if(existingContainer) existingContainer.remove();
-
                 const scriptContainer = document.createElement('div');
                 scriptContainer.id = 'adsterra-script-container';
                 document.body.appendChild(scriptContainer);
-
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = config.headScripts;
-                
                 const scripts = tempDiv.getElementsByTagName('script');
                 for (let i = 0; i < scripts.length; i++) {
                     const newScript = document.createElement('script');
-                    if (scripts[i].src) {
-                        newScript.src = scripts[i].src; 
-                    } else {
-                        newScript.innerHTML = scripts[i].innerHTML; 
-                    }
+                    if (scripts[i].src) newScript.src = scripts[i].src; 
+                    else newScript.innerHTML = scripts[i].innerHTML; 
                     scriptContainer.appendChild(newScript);
                 }
             }
@@ -226,21 +176,15 @@
     });
 
     function loadVideosSafe() {
-        console.log("Fetching videos from database...");
-        
         db.ref('videos').orderByChild('timestamp').once('value')
         .then((snapshot) => {
             const grid = document.getElementById('mainGrid');
-            
             if(snapshot.exists()){
                 let videoList = [];
                 snapshot.forEach(c => {
                     const val = c.val();
-                    if(val && val.title) {
-                        videoList.push(val);
-                    }
+                    if(val && val.title) videoList.push(val);
                 });
-                
                 videoList.reverse();
 
                 if(videoList.length === 0) {
@@ -271,16 +215,10 @@
                       </div>
                     </div>`;
                 });
-                
                 grid.innerHTML = html;
-
             } else {
                 grid.innerHTML = "<p style='text-align:center; grid-column:1/-1; padding:20px;'>ডাটাবেস খালি।</p>";
             }
-        })
-        .catch(error => {
-            console.error("Firebase Fetch Error:", error);
-            document.getElementById('mainGrid').innerHTML = "<p style='text-align:center; color:red; grid-column:1/-1; padding:20px;'>ডাটাবেস কানেকশনে সমস্যা হয়েছে।</p>";
         });
     }
 
@@ -314,10 +252,21 @@
         document.getElementById('popupContainer').classList.remove('show-popup');
     };
 
+    // 🔥 ইন-অ্যাপ ভিডিও প্লেয়ার ওপেন করার ফাংশন 🔥
+    window.openVideoPlayer = function(url) {
+        document.getElementById('inAppPlayer').style.display = 'flex';
+        document.getElementById('videoIframe').src = url;
+    };
+
+    // 🔥 ইন-অ্যাপ ভিডিও প্লেয়ার বন্ধ করার ফাংশন 🔥
+    window.closeVideoPlayer = function() {
+        document.getElementById('inAppPlayer').style.display = 'none';
+        document.getElementById('videoIframe').src = ""; // ভিডিও প্লে বন্ধ করতে সোর্স ক্লিয়ার
+    };
+
     window.watchAdAndPlay = function() {
         const btn = document.getElementById('adButton');
         
-        // যদি অ্যাডমিন প্যানেল থেকে আইডি না দেওয়া থাকে
         if (!AdController) {
             alert("বর্তমানে কোনো বিজ্ঞাপন উপলব্ধ নেই। অ্যাডমিন প্যানেল থেকে Adsgram ID সেট করুন।");
             return;
@@ -337,7 +286,8 @@
                     btn.disabled = false;
                     
                     if(currentMegaCloudLink && currentMegaCloudLink !== "#") {
-                        window.location.href = currentMegaCloudLink;
+                        // 🔥 রিডাইরেক্টের বদলে ইন-অ্যাপ প্লেয়ার ওপেন হবে 🔥
+                        openVideoPlayer(currentMegaCloudLink);
                     } else {
                         alert("এই ভিডিওটির মেগা ক্লাউড লিংক পাওয়া যায়নি!");
                     }
