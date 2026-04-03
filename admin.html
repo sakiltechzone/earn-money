@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Movie Zone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', 'Hind Siliguri', sans-serif; padding: 20px; background: #eef2f5; margin: 0; color: #2d3436; }
+        
+        /* কন্টেইনার এবং লগইন স্ক্রিন */
+        .container { max-width: 900px; margin: 0 auto; }
+        #loginScreen { max-width: 400px; margin: 80px auto; text-align: center; }
+        #adminContent { display: none; }
+        
+        /* 🔥 হেডার স্টাইল (ছোট করা হয়েছে) 🔥 */
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 12px 20px; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); border-radius: 8px; color: white; box-shadow: 0 4px 10px rgba(30, 60, 114, 0.15); }
+        .admin-header h2 { margin: 0; font-weight: 700; letter-spacing: 1px; font-size: 18px; }
+        .btn-logout { background: #e74c3c; width: auto; padding: 6px 12px; font-size: 13px; margin: 0; border: none; border-radius: 4px; color: white; cursor: pointer; font-weight: bold;} 
+        .btn-logout:hover { background: #c0392b; }
+        
+        .card { background: white; padding: 20px 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border-top: 4px solid #2a5298; }
+        h3 { margin-top: 0; color: #1e3c72; font-weight: 600; }
+        label { font-weight: 600; font-size: 14px; color: #555; display: block; margin-top: 15px; margin-bottom: 5px; text-align: left; }
+        
+        input, textarea { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-family: inherit; font-size: 14px; transition: 0.3s; margin-bottom: 10px; }
+        input:focus, textarea:focus { outline: none; border-color: #2a5298; box-shadow: 0 0 5px rgba(42, 82, 152, 0.2); }
+        textarea { height: 90px; resize: vertical; }
+        
+        button { padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; color: white; font-weight: bold; transition: 0.3s; font-size: 14px; margin-top: 10px; width: 100%; }
+        .btn-login { background: #1e3c72; } .btn-login:hover { background: #152a55; }
+        .btn-save { background: #27ae60; } .btn-save:hover { background: #219150; }
+        .btn-upload { background: #2a5298; } .btn-upload:hover { background: #1e3c72; }
+        .btn-cancel { background: #95a5a6; display: none; } .btn-cancel:hover { background: #7f8c8d; }
+        
+        .video-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 12px 0; }
+        .video-item:last-child { border-bottom: none; }
+        .video-item img { width: 70px; height: 45px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; }
+        .video-details { flex-grow: 1; margin-left: 15px; text-align: left; }
+        .video-details b { font-size: 14px; color: #2d3436; }
+        .video-details small { color: #636e72; font-size: 12px; }
+        
+        .action-buttons button { width: auto; margin-left: 5px; padding: 5px 10px; font-size: 12px; margin-top: 0; }
+        .btn-edit { background: #f39c12; } .btn-edit:hover { background: #d68910; }
+        .btn-del { background: #c0392b; } .btn-del:hover { background: #a93226; }
+        
+        .section-title { border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; text-align: left; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="loginScreen" class="card">
+            <h2 style="color: #1e3c72;">অ্যাডমিন লগইন</h2>
+            <p style="color: #7f8c8d; font-size: 14px; margin-bottom: 20px;">অ্যাডমিন প্যানেলে প্রবেশ করতে ইমেইল এবং পাসওয়ার্ড দিন</p>
+            <input type="email" id="adminEmail" placeholder="ইমেইল অ্যাড্রেস">
+            <input type="password" id="adminPassword" placeholder="পাসওয়ার্ড">
+            <button class="btn-login" onclick="loginAdmin()">লগইন করুন</button>
+            <p id="loginError" style="color: red; font-size: 13px; display: none; margin-top: 10px;"></p>
+        </div>
+
+        <div id="adminContent">
+            <div class="admin-header">
+                <h2>PREMIUM MOVIE ZONE</h2>
+                <button class="btn-logout" onclick="logoutAdmin()">লগআউট</button>
+            </div>
+
+            <div class="card">
+                <h3 class="section-title">💎 Adsgram ও বিজ্ঞাপন সেটিংস</h3>
+                <label>🆔 Adsgram Block ID:</label>
+                <input type="text" id="adsgramId" placeholder="আপনার Adsgram Block ID দিন (যেমন: 123456)">
+                
+                <label>🎯 ভিডিও চালু করতে কয়টি অ্যাড দেখতে হবে? (Ad Limit):</label>
+                <input type="number" id="adLimit" placeholder="যেমন: 1 বা 2" value="1">
+
+                <label>🎭 গ্লোবাল স্ক্রিপ্ট (Popunder বা অন্য এড নেটওয়ার্ক):</label>
+                <textarea id="headScripts" placeholder="এখানে Adsterra পপঅন্ডার বা ভেরিফিকেশন কোড দিন..."></textarea>
+                
+                <button class="btn-save" onclick="saveAdSettings()">অ্যাড সেটিংস সেভ করুন</button>
+            </div>
+
+            <div class="card">
+                <h3 class="section-title" id="formTitle">🎬 মুভি / ভিডিও আপলোড করুন</h3>
+                <input type="hidden" id="editKey">
+                
+                <label>টাইটেল ও থাম্বনেইল (আবশ্যিক):</label>
+                <input type="text" id="v_title" placeholder="মুভির টাইটেল দিন">
+                <input type="text" id="v_thumb" placeholder="থাম্বনেইল ছবির লিংক">
+                
+                <label>☁️ Mega Cloud লিংক (আবশ্যিক):</label>
+                <input type="text" id="v_mega" placeholder="Mega Cloud মুভি লিংক দিন (অ্যাড দেখার পর এখানে যাবে)">
+
+                <label>GIF ও অন্যান্য তথ্য (ঐচ্ছিক):</label>
+                <input type="text" id="v_gif" placeholder="GIF লিংক (যদি থাকে)">
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="v_duration" placeholder="সময় (যেমন: 1:30:00)">
+                    <input type="text" id="v_views" placeholder="ভিউ (যেমন: 250K)">
+                    <input type="text" id="v_time" placeholder="আপলোড সময় (যেমন: 2 hours ago)">
+                </div>
+                
+                <button id="btnSubmit" class="btn-upload" onclick="handleVideoSubmit()">মুভি পোস্ট করুন</button>
+                <button id="btnCancel" class="btn-cancel" onclick="cancelEdit()">এডিট বাতিল করুন</button>
+            </div>
+
+            <div class="card">
+                <h3 class="section-title">📋 সকল আপলোড করা মুভি</h3>
+                <div id="videoList">লোড হচ্ছে...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBlRY15dg5BAsgWgLf7u2liQs4pFngZxz4",
+            authDomain: "newtaskbot.firebaseapp.com",
+            projectId: "newtaskbot",
+            storageBucket: "newtaskbot.firebasestorage.app",
+            messagingSenderId: "367409983642",
+            appId: "1:367409983642:web:1d46dc2e03b892aca8af23",
+            databaseURL: "https://newtaskbot-default-rtdb.firebaseio.com"
+        };
+
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const auth = firebase.auth();
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('adminContent').style.display = 'block';
+                loadAdminData(); 
+            } else {
+                document.getElementById('loginScreen').style.display = 'block';
+                document.getElementById('adminContent').style.display = 'none';
+            }
+        });
+
+        function loginAdmin() {
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            const errorMsg = document.getElementById('loginError');
+            
+            if(!email || !password) {
+                errorMsg.innerText = "ইমেইল এবং পাসওয়ার্ড দিন!";
+                errorMsg.style.display = "block";
+                return;
+            }
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then(() => {
+                    errorMsg.style.display = "none";
+                    document.getElementById('adminEmail').value = "";
+                    document.getElementById('adminPassword').value = "";
+                })
+                .catch(() => {
+                    errorMsg.innerText = "লগইন ব্যর্থ হয়েছে! ইমেইল বা পাসওয়ার্ড ভুল।";
+                    errorMsg.style.display = "block";
+                });
+        }
+
+        function logoutAdmin() {
+            auth.signOut().then(() => alert("সফলভাবে লগআউট হয়েছে!"));
+        }
+
+        function loadAdminData() {
+            db.ref('siteConfig').on('value', (snap) => {
+                const config = snap.val();
+                if(config) {
+                    if(config.adsgramId) document.getElementById('adsgramId').value = config.adsgramId;
+                    if(config.adLimit) document.getElementById('adLimit').value = config.adLimit;
+                    if(config.headScripts) document.getElementById('headScripts').value = config.headScripts;
+                }
+            });
+
+            db.ref('videos').orderByChild('timestamp').on('value', (snap) => {
+                const list = document.getElementById('videoList');
+                list.innerHTML = "";
+                let html = "";
+                let videoArray = [];
+
+                snap.forEach(child => {
+                    const val = child.val();
+                    if(val && val.title) { videoArray.push({key: child.key, ...val}); }
+                });
+                videoArray.reverse();
+
+                if(videoArray.length === 0) {
+                    list.innerHTML = "কোনো মুভি আপলোড করা নেই।";
+                    return;
+                }
+
+                videoArray.forEach(v => {
+                    const cleanData = JSON.stringify(v).replace(/"/g, '&quot;');
+                    html += `
+                    <div class="video-item">
+                        <div style="display:flex; align-items:center;">
+                            <img src="${v.thumbnail}" onerror="this.src='https://via.placeholder.com/70x45'">
+                            <div class="video-details">
+                                <b>${v.title}</b><br>
+                                <small>👁️ ${v.views} | ☁️ Mega Link: ${v.megaLink ? 'Yes' : 'No'}</small>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn-edit" onclick="editVideo('${cleanData}')">Edit</button>
+                            <button class="btn-del" onclick="deleteVideo('${v.key}')">Del</button>
+                        </div>
+                    </div>`;
+                });
+                list.innerHTML = html;
+            });
+        }
+
+        function saveAdSettings() {
+            db.ref('siteConfig').update({
+                adsgramId: document.getElementById('adsgramId').value,
+                adLimit: document.getElementById('adLimit').value,
+                headScripts: document.getElementById('headScripts').value
+            }).then(() => alert('✅ Adsgram এবং বিজ্ঞাপন সেটিংস আপডেট হয়েছে!'));
+        }
+
+        function handleVideoSubmit() {
+            const key = document.getElementById('editKey').value;
+            const title = document.getElementById('v_title').value;
+            const thumbnail = document.getElementById('v_thumb').value;
+            const megaLink = document.getElementById('v_mega').value;
+            const gif = document.getElementById('v_gif').value || "";
+            const duration = document.getElementById('v_duration').value || "0:00";
+            const views = document.getElementById('v_views').value || "0";
+            const time = document.getElementById('v_time').value || "New";
+
+            if(!title || !thumbnail || !megaLink) {
+                return alert("❌ টাইটেল, থাম্বনেইল এবং মেগা ক্লাউড লিংক অবশ্যই দিতে হবে!");
+            }
+
+            const data = { title, thumbnail, megaLink, gif, duration, views, time, timestamp: Date.now() };
+
+            if(key) {
+                const updateData = {...data};
+                delete updateData.timestamp; 
+                db.ref('videos').child(key).update(updateData).then(() => { 
+                    alert('✅ মুভির তথ্য আপডেট হয়েছে!'); 
+                    cancelEdit(); 
+                }).catch(err => alert("Error: " + err.message));
+            } else {
+                db.ref('videos').push(data).then(() => { 
+                    alert('✅ নতুন মুভি পোস্ট হয়েছে!'); 
+                    cancelEdit(); 
+                }).catch(err => alert("Error: " + err.message));
+            }
+        }
+
+        function editVideo(jsonString) {
+            const data = JSON.parse(jsonString);
+            document.getElementById('editKey').value = data.key;
+            document.getElementById('v_title').value = data.title;
+            document.getElementById('v_thumb').value = data.thumbnail;
+            document.getElementById('v_mega').value = data.megaLink || '';
+            document.getElementById('v_gif').value = data.gif || '';
+            document.getElementById('v_duration').value = data.duration;
+            document.getElementById('v_views').value = data.views;
+            document.getElementById('v_time').value = data.time;
+            
+            document.getElementById('formTitle').innerText = "✏️ মুভি এডিট করুন";
+            document.getElementById('btnSubmit').innerText = "আপডেট করুন";
+            document.getElementById('btnSubmit').style.background = "#f39c12";
+            document.getElementById('btnCancel').style.display = "block";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cancelEdit() {
+            document.getElementById('editKey').value = "";
+            document.getElementById('v_title').value = "";
+            document.getElementById('v_thumb').value = "";
+            document.getElementById('v_mega').value = "";
+            document.getElementById('v_gif').value = "";
+            document.getElementById('v_duration').value = "";
+            document.getElementById('v_views').value = "";
+            document.getElementById('v_time').value = "";
+
+            document.getElementById('formTitle').innerText = "🎬 মুভি / ভিডিও আপলোড করুন";
+            document.getElementById('btnSubmit').innerText = "মুভি পোস্ট করুন";
+            document.getElementById('btnSubmit').style.background = "#2a5298";
+            document.getElementById('btnCancel').style.display = "none";
+        }
+
+        function deleteVideo(key) {
+            if(confirm('আপনি কি নিশ্চিত এই মুভিটি ডিলিট করবেন?')) {
+                db.ref('videos').child(key).remove();
+            }
+        }
+    </script>
+</body>
+</html>
