@@ -6,8 +6,9 @@
   <title>PREMIUM MOVIE ZONE</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 
   <style>
@@ -36,9 +37,8 @@
     .video-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.12); }
     
     .thumbnail { position: relative; width: 100%; padding-top: 56.25%; overflow: hidden; background: #000; }
-    .thumbnail img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .thumbnail img.static-thumb { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
     .video-card:hover .thumbnail img.static-thumb { transform: scale(1.05); }
-    .thumbnail img.gif-player { display: none; filter: blur(5px) brightness(0.8); transform: scale(1.1); }
     
     .play-btn-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(4px); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 255, 255, 0.4); transition: all 0.3s ease; z-index: 2; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
     .play-btn-wrapper i { color: white; font-size: 22px; margin-left: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
@@ -54,8 +54,7 @@
     .meta-pill i { color: #2a5298; font-size: 11px; }
     .upload-time { font-size: 12px; color: #95a5a6; font-weight: 500; display: flex; align-items: center; gap: 4px; }
     
-    .card-loader { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 10; display: none; }
-    .spinner { width: 45px; height: 45px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s linear infinite; }
+    .spinner { width: 45px; height: 45px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #1e3c72; animation: spin 1s linear infinite; margin: 0 auto; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
     
     /* --- পপআপ স্টাইল --- */
@@ -74,14 +73,14 @@
     .show-popup .popup-overlay { display: block; opacity: 1; }
     .show-popup .popup-box { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
-    /* 🔥 নতুন ইন-অ্যাপ ভিডিও প্লেয়ার স্টাইল 🔥 */
+    /* 🔥 ইন-অ্যাপ ভিডিও প্লেয়ার স্টাইল 🔥 */
     .in-app-player { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; flex-direction: column; }
     .player-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #111; color: white; }
     .player-header h3 { font-size: 16px; margin: 0; font-weight: 500; display: flex; align-items: center; gap: 8px; }
     .close-player-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 16px; cursor: pointer; transition: 0.2s; }
     .close-player-btn:active { transform: scale(0.9); }
-    .iframe-wrapper { flex-grow: 1; width: 100%; height: 100%; background: #000; }
-    .iframe-wrapper iframe { width: 100%; height: 100%; border: none; }
+    .iframe-wrapper { flex-grow: 1; width: 100%; height: 100%; background: #000; position: relative; }
+    .iframe-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
   </style>
 </head>
 <body>
@@ -94,7 +93,7 @@
 
 <div class="video-grid" id="mainGrid">
   <div style="text-align:center; grid-column:1/-1; padding:50px;">
-    <div class="spinner" style="border-color:#1e3c72; border-top-color:transparent; margin:0 auto;"></div>
+    <div class="spinner"></div>
     <p style="margin-top:15px; color:#636e72;">ভিডিও লোড হচ্ছে...</p>
   </div>
 </div>
@@ -118,7 +117,7 @@
         <button class="close-player-btn" onclick="closeVideoPlayer()"><i class="fas fa-times"></i></button>
     </div>
     <div class="iframe-wrapper">
-        <iframe id="videoIframe" src="" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+        <iframe id="videoIframe" src="" allow="autoplay; fullscreen" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
     </div>
 </div>
 
@@ -142,7 +141,7 @@
     }
     const db = firebase.database();
 
-    let AdController = window.Adsgram ? window.Adsgram.init({ blockId: "26734" }) : null;
+    let AdController = null;
     let currentMegaCloudLink = ""; 
     let currentAdLimit = 1; 
     let adsWatched = 0; 
@@ -151,7 +150,8 @@
         const config = snap.val();
         if(config) {
             if(config.adsgramId && window.Adsgram) {
-                AdController = window.Adsgram.init({ blockId: config.adsgramId });
+                const cleanId = String(config.adsgramId).trim();
+                AdController = window.Adsgram.init({ blockId: cleanId });
             }
             if(config.adLimit) {
                 currentAdLimit = parseInt(config.adLimit);
@@ -194,16 +194,13 @@
 
                 let html = "";
                 videoList.forEach((v) => {
-                    const gifSrc = v.gif || v.thumbnail;
                     const megaCloudLink = v.megaLink || "#"; 
-
+                    // GIF লজিক বাদ দেওয়া হয়েছে, শুধুমাত্র স্ট্যাটিক থাম্বনেইল থাকবে
                     html += `
-                    <div class="video-card" onclick="playVideo(this, '${gifSrc}', '${megaCloudLink}')">
+                    <div class="video-card" onclick="playVideo('${megaCloudLink}')">
                       <div class="thumbnail">
                         <img class="static-thumb" src="${v.thumbnail}" loading="lazy" alt="thumb" onerror="this.src='https://via.placeholder.com/320x180?text=No+Image'">
-                        <img class="gif-player" src="" alt="preview">
                         <div class="play-btn-wrapper"><i class="fas fa-play"></i></div>
-                        <div class="card-loader"><div class="spinner"></div></div>
                         <div class="duration-badge">${v.duration || '0:00'}</div>
                       </div>
                       <div class="video-info">
@@ -224,44 +221,32 @@
 
     loadVideosSafe();
 
-    window.playVideo = function(card, gifUrl, megaLink) {
-        const loader = card.querySelector('.card-loader');
-        const staticThumb = card.querySelector('.static-thumb');
-        const gifPlayer = card.querySelector('.gif-player');
-        const playBtn = card.querySelector('.play-btn-wrapper');
-
+    // GIF এর অপেক্ষা না করে সরাসরি পপআপ আনবে
+    window.playVideo = function(megaLink) {
         currentMegaCloudLink = megaLink;
         adsWatched = 0; 
-
-        playBtn.style.opacity = '0';
-        loader.style.display = 'flex';
-
-        setTimeout(() => {
-            loader.style.display = 'none';
-            staticThumb.style.opacity = '0';
-            gifPlayer.src = gifUrl;
-            gifPlayer.style.display = 'block';
-        }, 1500);
-
-        setTimeout(() => {
-            document.getElementById('popupContainer').classList.add('show-popup');
-        }, 5000);
+        document.getElementById('popupContainer').classList.add('show-popup');
     };
 
     window.closePopup = function() {
         document.getElementById('popupContainer').classList.remove('show-popup');
     };
 
-    // 🔥 ইন-অ্যাপ ভিডিও প্লেয়ার ওপেন করার ফাংশন 🔥
     window.openVideoPlayer = function(url) {
+        let finalUrl = url;
+        
+        // মেগার রেগুলার লিংক হলে অটোমেটিক embed লিংকে কনভার্ট করবে
+        if (url.includes('mega.nz/file/')) {
+            finalUrl = url.replace('mega.nz/file/', 'mega.nz/embed/');
+        }
+
         document.getElementById('inAppPlayer').style.display = 'flex';
-        document.getElementById('videoIframe').src = url;
+        document.getElementById('videoIframe').src = finalUrl;
     };
 
-    // 🔥 ইন-অ্যাপ ভিডিও প্লেয়ার বন্ধ করার ফাংশন 🔥
     window.closeVideoPlayer = function() {
         document.getElementById('inAppPlayer').style.display = 'none';
-        document.getElementById('videoIframe').src = ""; // ভিডিও প্লে বন্ধ করতে সোর্স ক্লিয়ার
+        document.getElementById('videoIframe').src = ""; 
     };
 
     window.watchAdAndPlay = function() {
@@ -286,7 +271,6 @@
                     btn.disabled = false;
                     
                     if(currentMegaCloudLink && currentMegaCloudLink !== "#") {
-                        // 🔥 রিডাইরেক্টের বদলে ইন-অ্যাপ প্লেয়ার ওপেন হবে 🔥
                         openVideoPlayer(currentMegaCloudLink);
                     } else {
                         alert("এই ভিডিওটির মেগা ক্লাউড লিংক পাওয়া যায়নি!");
