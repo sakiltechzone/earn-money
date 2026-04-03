@@ -126,7 +126,7 @@
     let currentMegaCloudLink = ""; 
     let currentAdLimit = 1; 
     let adsWatched = 0; 
-    let currentActiveCardId = null; // কোন কার্ডে ক্লিক করা হয়েছে তা ট্র্যাক করতে
+    let currentActiveCardId = null;
 
     db.ref('siteConfig').on('value', (snap) => {
         const config = snap.val();
@@ -166,7 +166,7 @@
                 snapshot.forEach(c => {
                     const val = c.val();
                     if(val && val.title) {
-                        val.key = c.key; // ইউনিক আইডির জন্য
+                        val.key = c.key;
                         videoList.push(val);
                     }
                 });
@@ -206,7 +206,6 @@
 
     loadVideosSafe();
 
-    // ভিডিওতে ক্লিক করলে পপআপ আসবে
     window.playVideo = function(cardKey, megaLink) {
         currentActiveCardId = "thumb-" + cardKey;
         currentMegaCloudLink = megaLink;
@@ -218,27 +217,26 @@
         document.getElementById('popupContainer').classList.remove('show-popup');
     };
 
-    // 🔥 ইন-লাইন ভিডিও প্লেয়ার (কার্ডের ভেতরে প্লে হবে) 🔥
+    // 🔥 আপডেটেড ভিডিও প্লেয়ার (Sandbox যুক্ত করা হয়েছে) 🔥
     window.unlockVideoInline = function() {
         const container = document.getElementById(currentActiveCardId);
         if (!container) return;
         
-        container.onclick = null; // বারবার ক্লিক বন্ধ করা হলো
+        container.onclick = null;
         
         let finalUrl = currentMegaCloudLink;
         
-        // মেগার রেগুলার লিংক হলে অটোমেটিক embed লিংকে কনভার্ট করবে
         if (finalUrl.includes('mega.nz/file/')) {
             finalUrl = finalUrl.replace('mega.nz/file/', 'mega.nz/embed/');
         }
 
-        // ডিরেক্ট ভিডিও ফাইল হলে video ট্যাগ, না হলে iframe
         let isDirectVideo = finalUrl.match(/\.(mp4|webm|mkv|ogg)/i);
         
         if (isDirectVideo) {
             container.innerHTML = `<video src="${finalUrl}" controls autoplay playsinline style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; background: #000;"></video>`;
         } else {
-            container.innerHTML = `<iframe src="${finalUrl}" frameborder="0" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000;"></iframe>`;
+            // sandbox অ্যাট্রিবিউট যোগ করা হয়েছে যাতে মেগা রিডাইরেক্ট করতে না পারে
+            container.innerHTML = `<iframe src="${finalUrl}" frameborder="0" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" sandbox="allow-scripts allow-same-origin allow-presentation" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000;"></iframe>`;
         }
     };
 
@@ -264,7 +262,6 @@
                     btn.disabled = false;
                     
                     if(currentMegaCloudLink && currentMegaCloudLink !== "#") {
-                        // অ্যাড দেখা শেষ হলে কার্ডের ভেতরেই ভিডিও আনলক হবে
                         unlockVideoInline();
                     } else {
                         alert("এই ভিডিওটির লিংক পাওয়া যায়নি!");
