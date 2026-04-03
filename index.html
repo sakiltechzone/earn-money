@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+
   <style>
     :root { 
       --primary-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); 
@@ -142,7 +143,7 @@
     }
     const db = firebase.database();
 
-    let AdController = window.Adsgram ? window.Adsgram.init({ blockId: "26734" }) : null;
+    let AdController = null;
     let currentMegaCloudLink = ""; 
     let currentAdLimit = 1; 
     let adsWatched = 0; 
@@ -151,7 +152,9 @@
         const config = snap.val();
         if(config) {
             if(config.adsgramId && window.Adsgram) {
-                AdController = window.Adsgram.init({ blockId: config.adsgramId });
+                // স্পেস বা অন্য কোনো ভুল ক্যারেক্টার থাকলে মুছে ফেলার লজিক
+                const cleanId = String(config.adsgramId).trim();
+                AdController = window.Adsgram.init({ blockId: cleanId });
             }
             if(config.adLimit) {
                 currentAdLimit = parseInt(config.adLimit);
@@ -286,7 +289,6 @@
                     btn.disabled = false;
                     
                     if(currentMegaCloudLink && currentMegaCloudLink !== "#") {
-                        // 🔥 রিডাইরেক্টের বদলে ইন-অ্যাপ প্লেয়ার ওপেন হবে 🔥
                         openVideoPlayer(currentMegaCloudLink);
                     } else {
                         alert("এই ভিডিওটির মেগা ক্লাউড লিংক পাওয়া যায়নি!");
