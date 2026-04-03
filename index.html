@@ -6,8 +6,8 @@
   <title>PREMIUM MOVIE ZONE</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 
@@ -33,10 +33,10 @@
     
     .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: 20px; max-width: 1280px; margin: 0 auto; padding: 0 15px 50px 15px; }
     
-    .video-card { background: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 20px -5px rgba(0, 0, 0, 0.08); transition: all 0.3s; cursor: pointer; position: relative; border: 1px solid rgba(255,255,255,0.8); }
+    .video-card { background: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 20px -5px rgba(0, 0, 0, 0.08); transition: all 0.3s; position: relative; border: 1px solid rgba(255,255,255,0.8); }
     .video-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.12); }
     
-    .thumbnail { position: relative; width: 100%; padding-top: 56.25%; overflow: hidden; background: #000; }
+    .thumbnail { position: relative; width: 100%; padding-top: 56.25%; overflow: hidden; background: #000; cursor: pointer; }
     .thumbnail img.static-thumb { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
     .video-card:hover .thumbnail img.static-thumb { transform: scale(1.05); }
     
@@ -72,15 +72,6 @@
     
     .show-popup .popup-overlay { display: block; opacity: 1; }
     .show-popup .popup-box { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
-
-    /* 🔥 ইন-অ্যাপ ভিডিও প্লেয়ার স্টাইল 🔥 */
-    .in-app-player { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; flex-direction: column; }
-    .player-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #111; color: white; }
-    .player-header h3 { font-size: 16px; margin: 0; font-weight: 500; display: flex; align-items: center; gap: 8px; }
-    .close-player-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 16px; cursor: pointer; transition: 0.2s; }
-    .close-player-btn:active { transform: scale(0.9); }
-    .iframe-wrapper { flex-grow: 1; width: 100%; height: 100%; background: #000; position: relative; }
-    .iframe-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
   </style>
 </head>
 <body>
@@ -111,16 +102,6 @@
     </div>
 </div>
 
-<div id="inAppPlayer" class="in-app-player">
-    <div class="player-header">
-        <h3><i class="fas fa-film" style="color: var(--accent-color);"></i> Now Playing</h3>
-        <button class="close-player-btn" onclick="closeVideoPlayer()"><i class="fas fa-times"></i></button>
-    </div>
-    <div class="iframe-wrapper">
-        <iframe id="videoIframe" src="" allow="autoplay; fullscreen" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
-    </div>
-</div>
-
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
@@ -145,6 +126,7 @@
     let currentMegaCloudLink = ""; 
     let currentAdLimit = 1; 
     let adsWatched = 0; 
+    let currentActiveCardId = null; // কোন কার্ডে ক্লিক করা হয়েছে তা ট্র্যাক করতে
 
     db.ref('siteConfig').on('value', (snap) => {
         const config = snap.val();
@@ -183,7 +165,10 @@
                 let videoList = [];
                 snapshot.forEach(c => {
                     const val = c.val();
-                    if(val && val.title) videoList.push(val);
+                    if(val && val.title) {
+                        val.key = c.key; // ইউনিক আইডির জন্য
+                        videoList.push(val);
+                    }
                 });
                 videoList.reverse();
 
@@ -195,10 +180,10 @@
                 let html = "";
                 videoList.forEach((v) => {
                     const megaCloudLink = v.megaLink || "#"; 
-                    // GIF লজিক বাদ দেওয়া হয়েছে, শুধুমাত্র স্ট্যাটিক থাম্বনেইল থাকবে
+                    
                     html += `
-                    <div class="video-card" onclick="playVideo('${megaCloudLink}')">
-                      <div class="thumbnail">
+                    <div class="video-card">
+                      <div class="thumbnail" id="thumb-${v.key}" onclick="playVideo('${v.key}', '${megaCloudLink}')">
                         <img class="static-thumb" src="${v.thumbnail}" loading="lazy" alt="thumb" onerror="this.src='https://via.placeholder.com/320x180?text=No+Image'">
                         <div class="play-btn-wrapper"><i class="fas fa-play"></i></div>
                         <div class="duration-badge">${v.duration || '0:00'}</div>
@@ -221,8 +206,9 @@
 
     loadVideosSafe();
 
-    // GIF এর অপেক্ষা না করে সরাসরি পপআপ আনবে
-    window.playVideo = function(megaLink) {
+    // ভিডিওতে ক্লিক করলে পপআপ আসবে
+    window.playVideo = function(cardKey, megaLink) {
+        currentActiveCardId = "thumb-" + cardKey;
         currentMegaCloudLink = megaLink;
         adsWatched = 0; 
         document.getElementById('popupContainer').classList.add('show-popup');
@@ -232,21 +218,28 @@
         document.getElementById('popupContainer').classList.remove('show-popup');
     };
 
-    window.openVideoPlayer = function(url) {
-        let finalUrl = url;
+    // 🔥 ইন-লাইন ভিডিও প্লেয়ার (কার্ডের ভেতরে প্লে হবে) 🔥
+    window.unlockVideoInline = function() {
+        const container = document.getElementById(currentActiveCardId);
+        if (!container) return;
+        
+        container.onclick = null; // বারবার ক্লিক বন্ধ করা হলো
+        
+        let finalUrl = currentMegaCloudLink;
         
         // মেগার রেগুলার লিংক হলে অটোমেটিক embed লিংকে কনভার্ট করবে
-        if (url.includes('mega.nz/file/')) {
-            finalUrl = url.replace('mega.nz/file/', 'mega.nz/embed/');
+        if (finalUrl.includes('mega.nz/file/')) {
+            finalUrl = finalUrl.replace('mega.nz/file/', 'mega.nz/embed/');
         }
 
-        document.getElementById('inAppPlayer').style.display = 'flex';
-        document.getElementById('videoIframe').src = finalUrl;
-    };
-
-    window.closeVideoPlayer = function() {
-        document.getElementById('inAppPlayer').style.display = 'none';
-        document.getElementById('videoIframe').src = ""; 
+        // ডিরেক্ট ভিডিও ফাইল হলে video ট্যাগ, না হলে iframe
+        let isDirectVideo = finalUrl.match(/\.(mp4|webm|mkv|ogg)/i);
+        
+        if (isDirectVideo) {
+            container.innerHTML = `<video src="${finalUrl}" controls autoplay playsinline style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; background: #000;"></video>`;
+        } else {
+            container.innerHTML = `<iframe src="${finalUrl}" frameborder="0" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000;"></iframe>`;
+        }
     };
 
     window.watchAdAndPlay = function() {
@@ -271,9 +264,10 @@
                     btn.disabled = false;
                     
                     if(currentMegaCloudLink && currentMegaCloudLink !== "#") {
-                        openVideoPlayer(currentMegaCloudLink);
+                        // অ্যাড দেখা শেষ হলে কার্ডের ভেতরেই ভিডিও আনলক হবে
+                        unlockVideoInline();
                     } else {
-                        alert("এই ভিডিওটির মেগা ক্লাউড লিংক পাওয়া যায়নি!");
+                        alert("এই ভিডিওটির লিংক পাওয়া যায়নি!");
                     }
                 } else {
                     btn.innerHTML = `<i class="fas fa-play"></i> আরও ${currentAdLimit - adsWatched}টি অ্যাড দেখুন`;
