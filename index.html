@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Earn Money Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -130,6 +131,15 @@
             </div>
             <h2 class="page-title">Boost your game</h2>
             <div class="menu-list">
+                
+                <div class="menu-item" onclick="watchAdForReward(this.querySelector('.action-btn'))">
+                    <div class="item-icon" style="background: linear-gradient(135deg, #ff0844, #ffb199);"><i class="fa-solid fa-video" style="color: white;"></i></div>
+                    <div class="item-info">
+                        <div class="item-title">Watch Ad</div>
+                        <div class="item-reward">+ 10,000 Coins</div>
+                    </div>
+                    <button class="action-btn">Watch</button>
+                </div>
                 <div class="menu-item" onclick="alert('Full Energy applied!')">
                     <div class="item-icon" style="background: linear-gradient(135deg, #ff9a44, #fc6076);"><i class="fa-solid fa-bolt" style="color: white;"></i></div>
                     <div class="item-info">
@@ -144,6 +154,257 @@
                         <div class="item-title">Multitap</div>
                         <div class="item-reward"><i class="fa-solid fa-coins"></i> 2,000 • Level 1</div>
                     </div>
+                    <button class="action-btn">Upgrade</button>
+                </div>
+                <div class="menu-item">
+                    <div class="item-icon" style="background: linear-gradient(135deg, #a18cd1, #fbc2eb);"><i class="fa-solid fa-battery-full" style="color: white;"></i></div>
+                    <div class="item-info">
+                        <div class="item-title">Energy Limit</div>
+                        <div class="item-reward"><i class="fa-solid fa-coins"></i> 5,000 • Level 1</div>
+                    </div>
+                    <button class="action-btn">Upgrade</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tasksPage" class="page">
+            <h2 class="page-title">Complete Tasks</h2>
+            <div class="menu-list">
+                <div class="menu-item" onclick="claimTask(5000, this)">
+                    <div class="item-icon" style="background: #0088cc;"><i class="fa-brands fa-telegram" style="color: white;"></i></div>
+                    <div class="item-info">
+                        <div class="item-title">Join our Channel</div>
+                        <div class="item-reward">+ 5,000 Coins</div>
+                    </div>
+                    <button class="action-btn">Join</button>
+                </div>
+                <div class="menu-item" onclick="claimTask(2000, this)">
+                    <div class="item-icon" style="background: #1DA1F2;"><i class="fa-brands fa-twitter" style="color: white;"></i></div>
+                    <div class="item-info">
+                        <div class="item-title">Follow on Twitter X</div>
+                        <div class="item-reward">+ 2,000 Coins</div>
+                    </div>
+                    <button class="action-btn">Follow</button>
+                </div>
+                <div class="menu-item" onclick="claimTask(10000, this)">
+                    <div class="item-icon" style="background: #FF0000;"><i class="fa-brands fa-youtube" style="color: white;"></i></div>
+                    <div class="item-info">
+                        <div class="item-title">Subscribe YouTube</div>
+                        <div class="item-reward">+ 10,000 Coins</div>
+                    </div>
+                    <button class="action-btn">Watch</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="friendsPage" class="page">
+            <h2 class="page-title">Invite Friends!</h2>
+            <div class="menu-list" style="text-align: center; margin-bottom: 20px;">
+                <p style="color: #aaa; font-size: 14px; margin-bottom: 15px;">You and your friend will receive bonuses</p>
+                <div class="menu-item" style="background: rgba(0, 242, 254, 0.1); border-color: #00f2fe;">
+                    <div class="item-icon" style="background: transparent;"><i class="fa-solid fa-gift" style="color: #00f2fe; font-size: 30px;"></i></div>
+                    <div class="item-info" style="text-align: left;">
+                        <div class="item-title">Invite a friend</div>
+                        <div class="item-reward"><span style="color: #00f2fe;">+ 25,000 for you and friend</span></div>
+                    </div>
+                </div>
+                <button class="action-btn" style="width: 100%; padding: 15px; font-size: 16px; margin-top: 10px;" onclick="alert('Invitation link copied!')">
+                    <i class="fa-regular fa-copy"></i> Copy Invite Link
+                </button>
+            </div>
+            <h3 style="margin-left: 20px; font-size: 16px; color: #fff;">List of your friends (0)</h3>
+            <div style="text-align: center; color: #666; margin-top: 20px; font-size: 14px;">
+                You haven't invited anyone yet
+            </div>
+        </div>
+
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('tapPage', this)"><i class="fa-solid fa-hand-pointer"></i> Tap</div>
+        <div class="nav-item" onclick="switchTab('boostsPage', this)"><i class="fa-solid fa-rocket"></i> Boosts</div>
+        <div class="nav-item" onclick="switchTab('tasksPage', this)"><i class="fa-solid fa-list-check"></i> Tasks</div>
+        <div class="nav-item" onclick="switchTab('friendsPage', this)"><i class="fa-solid fa-user-group"></i> Friends</div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyARBSgxkAkBbtG213IlfSRif6Y2-rS-_CE",
+            authDomain: "free-earn-money-24-8fa78.firebaseapp.com",
+            databaseURL: "https://free-earn-money-24-8fa78-default-rtdb.firebaseio.com",
+            projectId: "free-earn-money-24-8fa78",
+            storageBucket: "free-earn-money-24-8fa78.firebasestorage.app",
+            messagingSenderId: "104446443510",
+            appId: "1:104446443510:web:3b3ce06fbfb1fbe91591d7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Telegram Web App
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        const user = tg.initDataUnsafe?.user || { id: "123456789", first_name: "Demo Player" };
+
+        document.getElementById('userName').innerText = user.first_name;
+        document.getElementById('userInitial').innerText = user.first_name.charAt(0).toUpperCase();
+
+        window.currentBalance = 0; // গ্লোবাল ভেরিয়েবল করলাম যাতে অন্য ফাংশন থেকে এক্সেস করা যায়
+        let currentEnergy = 1000;
+        const maxEnergy = 1000;
+        
+        const balanceDisplay = document.getElementById('balanceDisplay');
+        const balanceDisplayBoost = document.getElementById('balanceDisplayBoost');
+        const energyDisplay = document.getElementById('energyDisplay');
+        const energyBar = document.getElementById('energyBar');
+        const leagueName = document.getElementById('leagueName');
+        const userRef = ref(db, 'users/' + user.id);
+
+        function updateLeague(balance) {
+            if(balance >= 50000) return {name: "Diamond", color: "#b9f2ff"};
+            if(balance >= 10000) return {name: "Gold", color: "#ffd700"};
+            if(balance >= 5000) return {name: "Silver", color: "#c0c0c0"};
+            return {name: "Bronze", color: "#cd7f32"};
+        }
+
+        async function loadUserData() {
+            try {
+                const snapshot = await get(userRef);
+                if (snapshot.exists()) {
+                    window.currentBalance = snapshot.val().balance || 0;
+                } else {
+                    await set(userRef, { name: user.first_name, balance: 0 });
+                }
+                updateUI();
+                document.getElementById('loading').style.display = 'none';
+            } catch (error) {
+                console.error("DB Error: ", error);
+                document.getElementById('loadingText').innerText = "Database Error: " + error.message;
+            }
+        }
+        loadUserData();
+
+        window.updateUI = function() {
+            const formattedBalance = window.currentBalance.toLocaleString();
+            balanceDisplay.innerText = formattedBalance;
+            balanceDisplayBoost.innerText = formattedBalance; // Boost পেজের ব্যালেন্স
+            energyDisplay.innerText = currentEnergy;
+            energyBar.style.width = (currentEnergy / maxEnergy) * 100 + "%";
+            
+            const league = updateLeague(window.currentBalance);
+            leagueName.innerText = league.name;
+            leagueName.style.color = league.color;
+        }
+
+        // Tap Logic
+        const tapArea = document.getElementById('tapArea');
+        const tapBtn = document.getElementById('tapBtn');
+
+        tapBtn.addEventListener('pointerdown', (e) => {
+            if(currentEnergy <= 0) return;
+            tg.HapticFeedback.impactOccurred('light');
+
+            window.currentBalance += 1;
+            currentEnergy -= 1;
+            window.updateUI();
+
+            // Firebase Update (Debouncing করা ভালো, আপাতত ডাইরেক্ট আপডেট হচ্ছে)
+            update(userRef, { balance: window.currentBalance });
+
+            const floatText = document.createElement('div');
+            floatText.classList.add('floating-number');
+            floatText.innerText = '+1';
+            
+            const rect = tapArea.getBoundingClientRect();
+            const x = e.clientX - rect.left - 20; 
+            const y = e.clientY - rect.top - 20;
+
+            floatText.style.left = `${x}px`;
+            floatText.style.top = `${y}px`;
+            
+            tapArea.appendChild(floatText);
+            setTimeout(() => { floatText.remove(); }, 1000);
+        });
+
+        // Auto Energy
+        setInterval(() => {
+            if (currentEnergy < maxEnergy) {
+                currentEnergy += 1;
+                window.updateUI();
+            }
+        }, 1000);
+
+        // টাস্ক ক্লেইম করার ডেমো ফাংশন
+        window.claimTask = function(rewardAmount, btnElement) {
+            tg.HapticFeedback.notificationOccurred('success');
+            window.currentBalance += rewardAmount;
+            window.updateUI();
+            update(userRef, { balance: window.currentBalance });
+            
+            // বাটন ডিজেবল করা
+            const btn = btnElement.querySelector('.action-btn');
+            btn.innerText = "Claimed";
+            btn.style.background = "#333";
+            btn.style.color = "#888";
+            btnElement.onclick = null; // বারবার ক্লিক বন্ধ
+            alert(`Congratulations! You received ${rewardAmount.toLocaleString()} coins.`);
+        }
+
+        // --- Adsgram লজিক যুক্ত করা হলো ---
+        const AdController = window.Adsgram.init({ blockId: "26734" });
+
+        window.watchAdForReward = function(btnElement) {
+            const originalText = btnElement.innerText;
+            btnElement.innerText = "Loading..."; 
+            
+            AdController.show().then((result) => {
+                // অ্যাড সম্পূর্ণ দেখলে এই কোড রান করবে
+                tg.HapticFeedback.notificationOccurred('success');
+                window.currentBalance += 10000; 
+                window.updateUI();
+                
+                // ফায়ারবেসে ব্যালেন্স আপডেট
+                update(userRef, { balance: window.currentBalance });
+                
+                alert("Thank you! +10,000 Coins added.");
+                btnElement.innerText = originalText;
+                
+            }).catch((result) => {
+                // অ্যাড স্কিপ করলে বা লোড না হলে
+                tg.HapticFeedback.notificationOccurred('error');
+                alert("Ad skipped or unavailable right now.");
+                btnElement.innerText = originalText;
+            });
+        };
+        // --- শেষ ---
+
+    </script>
+
+    <script>
+        function switchTab(pageId, navElement) {
+            // টেলিগ্রাম ভাইব্রেশন
+            window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+
+            // সব পেজ হাইড করা
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+
+            // সব নেভিগেশন আইকন থেকে অ্যাক্টিভ কালার সরানো
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+
+            // সিলেক্ট করা পেজ এবং আইকন অ্যাক্টিভ করা
+            document.getElementById(pageId).classList.add('active');
+            navElement.classList.add('active');
+        }
+    </script>
+
+</body>
+</html>
                     <button class="action-btn">Upgrade</button>
                 </div>
                 <div class="menu-item">
