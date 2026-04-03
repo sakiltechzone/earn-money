@@ -1,368 +1,362 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Earn Money Mini App</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>PREMIUM MOVIE ZONE</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+
+  <style>
+    :root { 
+      --primary-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); 
+      --card-bg: #ffffff; 
+      --bg-color: #f0f2f5; 
+      --text-dark: #2d3436; 
+      --text-light: #636e72; 
+      --accent-color: #e84393; 
+    }
+    * {box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent;}
+    body { font-family: 'Poppins', 'Hind Siliguri', sans-serif; background: var(--bg-color); min-height: 100vh; color: var(--text-dark); }
     
-    <style>
-        /* মডার্ন ডার্ক থিম ও বেসিক স্টাইল */
-        * { 
-            margin: 0; padding: 0; box-sizing: border-box; 
-            font-family: 'Poppins', sans-serif; 
-            -webkit-tap-highlight-color: transparent; 
-            outline: none;
+    /* --- নতুন আকর্ষণীয় হেডার স্টাইল (image_6.png অনুযায়ী) --- */
+    .header { 
+        text-align: center; 
+        margin-bottom: 25px; 
+        padding: 20px 15px; 
+        background: var(--primary-gradient); 
+        color: white;
+        box-shadow: 0 4px 15px rgba(30, 60, 114, 0.2);
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;
+        display: flex; /* বোতামটিকে কেন্দ্রে রাখতে */
+        justify-content: center;
+        align-items: center;
+    }
+    
+    /* glowing-title-btn এর স্টাইল image_6.png অনুযায়ী */
+    .glowing-title-btn {
+        font-family: 'Poppins', sans-serif;
+        font-size: 18px; /* টেক্সট সাইজ */
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #2d3436; /* গাড় রঙের টেক্সট */
+        background: #fdcb6e; /* উজ্জ্বল হলুদ background, image_6.png এর মতো */
+        border: none;
+        border-radius: 30px; /* গোল কোণ */
+        padding: 12px 30px; /* বোতামের আকার */
+        display: flex;
+        align-items: center;
+        gap: 10px; /* আইকন এবং টেক্সটের মাঝে ফাঁকা */
+        cursor: pointer;
+        text-decoration: none;
+        box-shadow: 0 0 15px rgba(253, 203, 110, 0.7); /* প্রাথমিক হলুদ গ্লো */
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.3s;
+        animation: glowPulse 2s infinite; /* অ্যানিমেশন যুক্ত করা হলো */
+    }
+
+    /* হোভার এফেক্ট */
+    .glowing-title-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px rgba(253, 203, 110, 0.9); /* হোভারে উজ্জ্বল গ্লো */
+    }
+
+    /* বিদ্যুতের আইকনের স্টাইল */
+    .glowing-title-btn i {
+        font-size: 20px;
+        color: #2d3436; /* আইকনের রঙ টেক্সটের মতো */
+    }
+
+    /* গ্লো অ্যানিমেশন - Pulse */
+    @keyframes glowPulse {
+        0% {
+            box-shadow: 0 0 10px rgba(253, 203, 110, 0.6);
         }
-        
-        body { 
-            background: radial-gradient(circle at top, #1a1a2e, #0f0f1a);
-            color: #ffffff; display: flex; flex-direction: column; 
-            height: 100vh; overflow: hidden; user-select: none;
+        50% {
+            box-shadow: 0 0 25px rgba(253, 203, 110, 0.9);
         }
-
-        /* গ্লাস ইফেক্ট (Glassmorphism) */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
+        100% {
+            box-shadow: 0 0 10px rgba(253, 203, 110, 0.6);
         }
-
-        /* --- হেডার --- */
-        .header { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; margin: 15px; flex-shrink: 0; }
-        .user-info { display: flex; align-items: center; gap: 12px; }
-        .user-avatar { width: 45px; height: 45px; background: linear-gradient(135deg, #00f2fe, #4facfe); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 20px; border: 2px solid #fff; }
-        .user-details h3 { font-size: 16px; margin: 0; }
-        .user-league { font-size: 12px; color: #00f2fe; display: flex; align-items: center; gap: 5px; }
-
-        /* --- পেজ কন্টেইনার --- */
-        .main-content {
-            flex-grow: 1;
-            overflow-y: auto;
-            position: relative;
-            padding-bottom: 20px;
-        }
-
-        /* পেজ হাইড/শো করার ক্লাস */
-        .page { display: none; flex-direction: column; height: 100%; }
-        .page.active { display: flex; animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- ব্যালেন্স (সব পেজে দেখানোর জন্য) --- */
-        .balance-section { text-align: center; margin-top: 10px; margin-bottom: 20px;}
-        .balance-amount { font-size: 55px; font-weight: 900; display: flex; justify-content: center; align-items: center; gap: 10px; background: -webkit-linear-gradient(#ffcc00, #ff8800); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0px 4px 15px rgba(255, 204, 0, 0.3); }
-        .coin-icon { color: #ffcc00; font-size: 45px; -webkit-text-fill-color: initial; }
-
-        /* --- Tap Page (হোম) --- */
-        .tap-area { flex-grow: 1; display: flex; justify-content: center; align-items: center; position: relative; }
-        .main-coin { width: 260px; height: 260px; background: radial-gradient(circle, #ffd700 0%, #d4af37 80%, #b8860b 100%); border-radius: 50%; border: 10px solid #ffaa00; box-shadow: 0 0 50px rgba(255, 204, 0, 0.4), inset 0 0 30px rgba(255,255,255,0.5); display: flex; justify-content: center; align-items: center; font-size: 100px; color: #fff; cursor: pointer; transition: transform 0.1s; touch-action: manipulation; position: relative; }
-        .main-coin:active { transform: scale(0.92); box-shadow: 0 0 30px rgba(255, 204, 0, 0.6); }
-        .floating-number { position: absolute; font-size: 30px; font-weight: bold; color: #ffffff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); pointer-events: none; animation: floatUp 1s ease-out forwards; }
-        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-100px) scale(1.5); } }
-        .energy-section { padding: 0 30px; margin-bottom: 10px; }
-        .energy-header { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; font-weight: bold; }
-        .energy-bar-bg { width: 100%; height: 12px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
-        .energy-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #ff8a00, #e52e71); border-radius: 10px; transition: width 0.1s linear; }
-
-        /* --- অন্যান্য পেজের লিস্ট ডিজাইন (Boosts, Tasks, Friends) --- */
-        .page-title { text-align: center; font-size: 22px; font-weight: bold; margin-bottom: 20px; color: #fff; }
-        .menu-list { padding: 0 20px; display: flex; flex-direction: column; gap: 15px; }
-        .menu-item { display: flex; align-items: center; padding: 15px; background: rgba(255, 255, 255, 0.05); border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); transition: 0.2s; cursor: pointer; }
-        .menu-item:active { transform: scale(0.98); background: rgba(255, 255, 255, 0.1); }
-        .item-icon { width: 45px; height: 45px; border-radius: 12px; background: linear-gradient(135deg, #2b5876, #4e4376); display: flex; justify-content: center; align-items: center; font-size: 22px; margin-right: 15px; }
-        .item-info { flex-grow: 1; }
-        .item-title { font-size: 16px; font-weight: bold; margin-bottom: 3px; }
-        .item-reward { font-size: 13px; color: #ffcc00; display: flex; align-items: center; gap: 5px; }
-        .action-btn { background: #00f2fe; color: #000; padding: 6px 15px; border-radius: 20px; font-weight: bold; font-size: 14px; border: none; cursor: pointer; }
-
-        /* --- বটম নেভিগেশন --- */
-        .bottom-nav { display: flex; justify-content: space-around; padding: 15px 10px; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: #888; font-size: 12px; cursor: pointer; transition: 0.3s; width: 25%; }
-        .nav-item i { font-size: 22px; }
-        .nav-item.active { color: #00f2fe; }
-
-        /* লোডিং স্ক্রিন */
-        #loading { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #0f0f1a; display: flex; justify-content: center; align-items: center; z-index: 999; font-size: 18px; font-weight: bold; color: #00f2fe; flex-direction: column; gap: 15px; }
-        .spinner { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid #00f2fe; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    </style>
+    }
+    
+    /* --- ভিডিও কার্ড এবং গ্রিড --- */
+    .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: 20px; max-width: 1280px; margin: 0 auto; padding: 0 15px 50px 15px; }
+    
+    .video-card { background: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 20px -5px rgba(0, 0, 0, 0.08); transition: all 0.3s; cursor: pointer; position: relative; border: 1px solid rgba(255,255,255,0.8); }
+    .video-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.12); }
+    
+    /* 🔥 থাম্বনেল সাইজ ইউটিউবের মতো 16:9 বজায় রাখা হয়েছে (padding-top: 56.25%) 🔥 */
+    .thumbnail { position: relative; width: 100%; padding-top: 56.25%; overflow: hidden; background: #000; }
+    .thumbnail img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .video-card:hover .thumbnail img.static-thumb { transform: scale(1.05); }
+    .thumbnail img.gif-player { display: none; filter: blur(5px) brightness(0.8); transform: scale(1.1); }
+    
+    .play-btn-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(4px); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 255, 255, 0.4); transition: all 0.3s ease; z-index: 2; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    .play-btn-wrapper i { color: white; font-size: 22px; margin-left: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+    .video-card:hover .play-btn-wrapper { background: var(--accent-color); transform: translate(-50%, -50%) scale(1.1); border-color: var(--accent-color); }
+    
+    .duration-badge { position: absolute; bottom: 10px; right: 10px; background: rgba(0, 0, 0, 0.8); color: white; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; backdrop-filter: blur(2px); z-index: 3; }
+    
+    .video-info { padding: 12px 15px; } 
+    .video-title { font-size: 15px; font-weight: 600; line-height: 1.3; color: var(--text-dark); margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 39px; }
+    
+    .meta-tags { display: flex; justify-content: space-between; align-items: center; }
+    .meta-pill { display: flex; align-items: center; gap: 6px; background: #f1f3f5; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; color: var(--text-light); box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); }
+    .meta-pill i { color: #2a5298; font-size: 11px; }
+    .upload-time { font-size: 12px; color: #95a5a6; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+    
+    .card-loader { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 10; display: none; }
+    .spinner { width: 45px; height: 45px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    
+    /* --- পপআপ স্টাইল --- */
+    .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); z-index: 1000; display: none; opacity: 0; transition: opacity 0.3s; }
+    .popup-box { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 90%; max-width: 380px; background: white; border-radius: 20px; padding: 30px 25px; text-align: center; z-index: 1001; display: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); opacity: 0; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .popup-icon { width: 60px; height: 60px; background: #e3f2fd; color: #1e3c72; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 15px; }
+    .popup-box h3 { font-size: 18px; color: var(--text-dark); margin-bottom: 8px; font-weight: 700; }
+    .popup-box p { font-size: 13px; color: var(--text-light); margin-bottom: 25px; line-height: 1.5; }
+    .popup-actions { display: flex; flex-direction: column; gap: 10px; }
+    
+    .btn { width: 100%; padding: 12px; border: none; border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer; transition: transform 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn:active { transform: scale(0.98); }
+    .btn-ad { background: var(--primary-gradient); color: white; box-shadow: 0 4px 15px rgba(30, 60, 114, 0.4); }
+    .btn-cancel { background: #fff; color: #ff7675; margin-top: 5px; font-size: 13px; }
+    
+    .show-popup .popup-overlay { display: block; opacity: 1; }
+    .show-popup .popup-box { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  </style>
 </head>
 <body>
 
-    <div id="loading">
-        <div class="spinner"></div>
-        <div id="loadingText">Syncing data...</div>
+<div class="header">
+    <button class="glowing-title-btn">
+        <i class="fas fa-bolt"></i> Premium Movie Zone
+    </button>
+</div>
+
+<div class="video-grid" id="mainGrid">
+  <div style="text-align:center; grid-column:1/-1; padding:50px;">
+    <div class="spinner" style="border-color:#1e3c72; border-top-color:transparent; margin:0 auto;"></div>
+    <p style="margin-top:15px; color:#636e72;">ভিডিও লোড হচ্ছে...</p>
+  </div>
+</div>
+
+<div id="popupContainer">
+    <div class="popup-overlay" onclick="closePopup()"></div>
+    <div class="popup-box">
+        <div class="popup-icon"><i class="fas fa-video"></i></div>
+        <h3>প্রিমিয়াম ভিডিও আনলক করুন</h3>
+        <p>সম্পূর্ণ মুভিটি প্লে করার জন্য একটি ছোট ভিডিও বিজ্ঞাপন দেখুন। বিজ্ঞাপন শেষ হলেই মুভি শুরু হবে।</p>
+        <div class="popup-actions">
+            <button class="btn btn-ad" id="adButton" onclick="watchAdAndPlay()"><i class="fas fa-play"></i> ভিডিও অ্যাড দেখুন</button>
+            <button class="btn btn-cancel" onclick="closePopup()">এখন না</button>
+        </div>
     </div>
+</div>
 
-    <div class="header glass-panel">
-        <div class="user-info">
-            <div class="user-avatar" id="userInitial">U</div>
-            <div class="user-details">
-                <h3 id="userName">User</h3>
-                <div class="user-league"><i class="fa-solid fa-trophy"></i> <span id="leagueName">Bronze</span></div>
-            </div>
-        </div>
-        <i class="fa-solid fa-gear" style="font-size: 20px; color: #aaa;" onclick="alert('Settings coming soon!')"></i>
-    </div>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
-    <div class="main-content">
-        
-        <div id="tapPage" class="page active">
-            <div class="balance-section">
-                <div class="balance-amount"><i class="fa-brands fa-bitcoin coin-icon"></i> <span id="balanceDisplay">0</span></div>
-            </div>
-            <div class="tap-area" id="tapArea">
-                <div class="main-coin" id="tapBtn"><i class="fa-brands fa-bitcoin"></i></div>
-            </div>
-            <div class="energy-section">
-                <div class="energy-header">
-                    <span><i class="fa-solid fa-bolt" style="color: #ffcc00;"></i> <span id="energyDisplay">1000</span> / 1000</span>
-                </div>
-                <div class="energy-bar-bg"><div class="energy-fill" id="energyBar"></div></div>
-            </div>
-        </div>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBlRY15dg5BAsgWgLf7u2liQs4pFngZxz4",
+    authDomain: "newtaskbot.firebaseapp.com",
+    databaseURL: "https://newtaskbot-default-rtdb.firebaseio.com",
+    projectId: "newtaskbot",
+    storageBucket: "newtaskbot.firebasestorage.app",
+    messagingSenderId: "367409983642",
+    appId: "1:367409983642:web:1d46dc2e03b892aca8af23"
+  };
 
-        <div id="boostsPage" class="page">
-            <div class="balance-section">
-                <div class="balance-amount"><span id="balanceDisplayBoost" style="font-size: 35px;">0</span></div>
-            </div>
-            <h2 class="page-title">Boost your game</h2>
-            <div class="menu-list">
-                <div class="menu-item" onclick="alert('Full Energy applied!')">
-                    <div class="item-icon" style="background: linear-gradient(135deg, #ff9a44, #fc6076);"><i class="fa-solid fa-bolt" style="color: white;"></i></div>
-                    <div class="item-info">
-                        <div class="item-title">Full Energy</div>
-                        <div class="item-reward">3/3 available daily</div>
-                    </div>
-                    <button class="action-btn" style="background: #fff;">Free</button>
-                </div>
-                <div class="menu-item">
-                    <div class="item-icon" style="background: linear-gradient(135deg, #43e97b, #38f9d7);"><i class="fa-solid fa-hand-pointer" style="color: white;"></i></div>
-                    <div class="item-info">
-                        <div class="item-title">Multitap</div>
-                        <div class="item-reward"><i class="fa-solid fa-coins"></i> 2,000 • Level 1</div>
-                    </div>
-                    <button class="action-btn">Upgrade</button>
-                </div>
-                <div class="menu-item">
-                    <div class="item-icon" style="background: linear-gradient(135deg, #a18cd1, #fbc2eb);"><i class="fa-solid fa-battery-full" style="color: white;"></i></div>
-                    <div class="item-info">
-                        <div class="item-title">Energy Limit</div>
-                        <div class="item-reward"><i class="fa-solid fa-coins"></i> 5,000 • Level 1</div>
-                    </div>
-                    <button class="action-btn">Upgrade</button>
-                </div>
-            </div>
-        </div>
+  try {
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
 
-        <div id="tasksPage" class="page">
-            <h2 class="page-title">Complete Tasks</h2>
-            <div class="menu-list">
-                <div class="menu-item" onclick="claimTask(5000, this)">
-                    <div class="item-icon" style="background: #0088cc;"><i class="fa-brands fa-telegram" style="color: white;"></i></div>
-                    <div class="item-info">
-                        <div class="item-title">Join our Channel</div>
-                        <div class="item-reward">+ 5,000 Coins</div>
-                    </div>
-                    <button class="action-btn">Join</button>
-                </div>
-                <div class="menu-item" onclick="claimTask(2000, this)">
-                    <div class="item-icon" style="background: #1DA1F2;"><i class="fa-brands fa-twitter" style="color: white;"></i></div>
-                    <div class="item-info">
-                        <div class="item-title">Follow on Twitter X</div>
-                        <div class="item-reward">+ 2,000 Coins</div>
-                    </div>
-                    <button class="action-btn">Follow</button>
-                </div>
-                <div class="menu-item" onclick="claimTask(10000, this)">
-                    <div class="item-icon" style="background: #FF0000;"><i class="fa-brands fa-youtube" style="color: white;"></i></div>
-                    <div class="item-info">
-                        <div class="item-title">Subscribe YouTube</div>
-                        <div class="item-reward">+ 10,000 Coins</div>
-                    </div>
-                    <button class="action-btn">Watch</button>
-                </div>
-            </div>
-        </div>
+    // 🔥 Adsgram ইনিশিয়ালাইজ করা হলো আপনার নির্দিষ্ট ইউনিট আইডি (26734) দিয়ে 🔥
+    let AdController = window.Adsgram ? window.Adsgram.init({ blockId: "25814" }) : null;
+    
+    let currentMegaCloudLink = ""; 
+    let currentAdLimit = 1; 
+    let adsWatched = 0; 
 
-        <div id="friendsPage" class="page">
-            <h2 class="page-title">Invite Friends!</h2>
-            <div class="menu-list" style="text-align: center; margin-bottom: 20px;">
-                <p style="color: #aaa; font-size: 14px; margin-bottom: 15px;">You and your friend will receive bonuses</p>
-                <div class="menu-item" style="background: rgba(0, 242, 254, 0.1); border-color: #00f2fe;">
-                    <div class="item-icon" style="background: transparent;"><i class="fa-solid fa-gift" style="color: #00f2fe; font-size: 30px;"></i></div>
-                    <div class="item-info" style="text-align: left;">
-                        <div class="item-title">Invite a friend</div>
-                        <div class="item-reward"><span style="color: #00f2fe;">+ 25,000 for you and friend</span></div>
-                    </div>
-                </div>
-                <button class="action-btn" style="width: 100%; padding: 15px; font-size: 16px; margin-top: 10px;" onclick="alert('Invitation link copied!')">
-                    <i class="fa-regular fa-copy"></i> Copy Invite Link
-                </button>
-            </div>
-            <h3 style="margin-left: 20px; font-size: 16px; color: #fff;">List of your friends (0)</h3>
-            <div style="text-align: center; color: #666; margin-top: 20px; font-size: 14px;">
-                You haven't invited anyone yet
-            </div>
-        </div>
+    // 🔥 ইউজার প্যানেলে siteConfig রিসিভ করার কোড (Adsterra সহ) 🔥
+    db.ref('siteConfig').on('value', (snap) => {
+        const config = snap.val();
+        if(config) {
+            // যদি অ্যাডমিন প্যানেল থেকে আইডি পরিবর্তন করা হয়, তবে সেটি কাজ করবে। না হলে ডিফল্ট 26734 থাকবে।
+            if(config.adsgramId && window.Adsgram) {
+                AdController = window.Adsgram.init({ blockId: config.adsgramId });
+            }
+            if(config.adLimit) {
+                currentAdLimit = parseInt(config.adLimit);
+            }
+            
+            // 🚀 Adsterra Popunder ইনজেক্ট করার লজিক 🚀
+            if(config.headScripts) {
+                const existingContainer = document.getElementById('adsterra-script-container');
+                if(existingContainer) existingContainer.remove();
 
-    </div>
+                const scriptContainer = document.createElement('div');
+                scriptContainer.id = 'adsterra-script-container';
+                document.body.appendChild(scriptContainer);
 
-    <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('tapPage', this)"><i class="fa-solid fa-hand-pointer"></i> Tap</div>
-        <div class="nav-item" onclick="switchTab('boostsPage', this)"><i class="fa-solid fa-rocket"></i> Boosts</div>
-        <div class="nav-item" onclick="switchTab('tasksPage', this)"><i class="fa-solid fa-list-check"></i> Tasks</div>
-        <div class="nav-item" onclick="switchTab('friendsPage', this)"><i class="fa-solid fa-user-group"></i> Friends</div>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
-
-        // Firebase Config
-        const firebaseConfig = {
-            apiKey: "AIzaSyARBSgxkAkBbtG213IlfSRif6Y2-rS-_CE",
-            authDomain: "free-earn-money-24-8fa78.firebaseapp.com",
-            databaseURL: "https://free-earn-money-24-8fa78-default-rtdb.firebaseio.com",
-            projectId: "free-earn-money-24-8fa78",
-            storageBucket: "free-earn-money-24-8fa78.firebasestorage.app",
-            messagingSenderId: "104446443510",
-            appId: "1:104446443510:web:3b3ce06fbfb1fbe91591d7"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-
-        // Telegram Web App
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        const user = tg.initDataUnsafe?.user || { id: "123456789", first_name: "Demo Player" };
-
-        document.getElementById('userName').innerText = user.first_name;
-        document.getElementById('userInitial').innerText = user.first_name.charAt(0).toUpperCase();
-
-        window.currentBalance = 0; // গ্লোবাল ভেরিয়েবল করলাম যাতে অন্য ফাংশন থেকে এক্সেস করা যায়
-        let currentEnergy = 1000;
-        const maxEnergy = 1000;
-        
-        const balanceDisplay = document.getElementById('balanceDisplay');
-        const balanceDisplayBoost = document.getElementById('balanceDisplayBoost');
-        const energyDisplay = document.getElementById('energyDisplay');
-        const energyBar = document.getElementById('energyBar');
-        const leagueName = document.getElementById('leagueName');
-        const userRef = ref(db, 'users/' + user.id);
-
-        function updateLeague(balance) {
-            if(balance >= 50000) return {name: "Diamond", color: "#b9f2ff"};
-            if(balance >= 10000) return {name: "Gold", color: "#ffd700"};
-            if(balance >= 5000) return {name: "Silver", color: "#c0c0c0"};
-            return {name: "Bronze", color: "#cd7f32"};
-        }
-
-        async function loadUserData() {
-            try {
-                const snapshot = await get(userRef);
-                if (snapshot.exists()) {
-                    window.currentBalance = snapshot.val().balance || 0;
-                } else {
-                    await set(userRef, { name: user.first_name, balance: 0 });
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = config.headScripts;
+                
+                const scripts = tempDiv.getElementsByTagName('script');
+                for (let i = 0; i < scripts.length; i++) {
+                    const newScript = document.createElement('script');
+                    if (scripts[i].src) {
+                        newScript.src = scripts[i].src; 
+                    } else {
+                        newScript.innerHTML = scripts[i].innerHTML; 
+                    }
+                    scriptContainer.appendChild(newScript);
                 }
-                updateUI();
-                document.getElementById('loading').style.display = 'none';
-            } catch (error) {
-                console.error("DB Error: ", error);
-                document.getElementById('loadingText').innerText = "Database Error: " + error.message;
             }
         }
-        loadUserData();
+    });
 
-        window.updateUI = function() {
-            const formattedBalance = window.currentBalance.toLocaleString();
-            balanceDisplay.innerText = formattedBalance;
-            balanceDisplayBoost.innerText = formattedBalance; // Boost পেজের ব্যালেন্স
-            energyDisplay.innerText = currentEnergy;
-            energyBar.style.width = (currentEnergy / maxEnergy) * 100 + "%";
+    function loadVideosSafe() {
+        console.log("Fetching videos from database...");
+        
+        db.ref('videos').orderByChild('timestamp').once('value')
+        .then((snapshot) => {
+            const grid = document.getElementById('mainGrid');
             
-            const league = updateLeague(window.currentBalance);
-            leagueName.innerText = league.name;
-            leagueName.style.color = league.color;
-        }
+            if(snapshot.exists()){
+                let videoList = [];
+                snapshot.forEach(c => {
+                    const val = c.val();
+                    if(val && val.title) {
+                        videoList.push(val);
+                    }
+                });
+                
+                videoList.reverse();
 
-        // Tap Logic
-        const tapArea = document.getElementById('tapArea');
-        const tapBtn = document.getElementById('tapBtn');
+                if(videoList.length === 0) {
+                     grid.innerHTML = "<p style='text-align:center; grid-column:1/-1; padding:20px;'>কোনো মুভি পাওয়া যায়নি।</p>";
+                     return;
+                }
 
-        tapBtn.addEventListener('pointerdown', (e) => {
-            if(currentEnergy <= 0) return;
-            tg.HapticFeedback.impactOccurred('light');
+                let html = "";
+                videoList.forEach((v) => {
+                    const gifSrc = v.gif || v.thumbnail;
+                    const megaCloudLink = v.megaLink || "#"; 
 
-            window.currentBalance += 1;
-            currentEnergy -= 1;
-            window.updateUI();
+                    html += `
+                    <div class="video-card" onclick="playVideo(this, '${gifSrc}', '${megaCloudLink}')">
+                      <div class="thumbnail">
+                        <img class="static-thumb" src="${v.thumbnail}" loading="lazy" alt="thumb" onerror="this.src='https://via.placeholder.com/320x180?text=No+Image'">
+                        <img class="gif-player" src="" alt="preview">
+                        <div class="play-btn-wrapper"><i class="fas fa-play"></i></div>
+                        <div class="card-loader"><div class="spinner"></div></div>
+                        <div class="duration-badge">${v.duration || '0:00'}</div>
+                      </div>
+                      <div class="video-info">
+                        <h3 class="video-title">${v.title}</h3>
+                        <div class="meta-tags">
+                            <div class="meta-pill"><i class="fas fa-eye"></i> ${v.views || '0'}</div>
+                            <div class="upload-time"><i class="far fa-clock"></i> ${v.time || 'New'}</div>
+                        </div>
+                      </div>
+                    </div>`;
+                });
+                
+                grid.innerHTML = html;
 
-            // Firebase Update (Debouncing করা ভালো, আপাতত ডাইরেক্ট আপডেট হচ্ছে)
-            update(userRef, { balance: window.currentBalance });
-
-            const floatText = document.createElement('div');
-            floatText.classList.add('floating-number');
-            floatText.innerText = '+1';
-            
-            const rect = tapArea.getBoundingClientRect();
-            const x = e.clientX - rect.left - 20; 
-            const y = e.clientY - rect.top - 20;
-
-            floatText.style.left = `${x}px`;
-            floatText.style.top = `${y}px`;
-            
-            tapArea.appendChild(floatText);
-            setTimeout(() => { floatText.remove(); }, 1000);
+            } else {
+                grid.innerHTML = "<p style='text-align:center; grid-column:1/-1; padding:20px;'>ডাটাবেস খালি।</p>";
+            }
+        })
+        .catch(error => {
+            console.error("Firebase Fetch Error:", error);
+            document.getElementById('mainGrid').innerHTML = "<p style='text-align:center; color:red; grid-column:1/-1; padding:20px;'>ডাটাবেস কানেকশনে সমস্যা হয়েছে।</p>";
         });
+    }
 
-        // Auto Energy
-        setInterval(() => {
-            if (currentEnergy < maxEnergy) {
-                currentEnergy += 1;
-                window.updateUI();
-            }
-        }, 1000);
+    loadVideosSafe();
 
-        // টাস্ক ক্লেইম করার ডেমো ফাংশন
-        window.claimTask = function(rewardAmount, btnElement) {
-            tg.HapticFeedback.notificationOccurred('success');
-            window.currentBalance += rewardAmount;
-            window.updateUI();
-            update(userRef, { balance: window.currentBalance });
-            
-            // বাটন ডিজেবল করা
-            const btn = btnElement.querySelector('.action-btn');
-            btn.innerText = "Claimed";
-            btn.style.background = "#333";
-            btn.style.color = "#888";
-            btnElement.onclick = null; // বারবার ক্লিক বন্ধ
-            alert(`Congratulations! You received ${rewardAmount.toLocaleString()} coins.`);
+    window.playVideo = function(card, gifUrl, megaLink) {
+        const loader = card.querySelector('.card-loader');
+        const staticThumb = card.querySelector('.static-thumb');
+        const gifPlayer = card.querySelector('.gif-player');
+        const playBtn = card.querySelector('.play-btn-wrapper');
+
+        currentMegaCloudLink = megaLink;
+        adsWatched = 0; 
+
+        playBtn.style.opacity = '0';
+        loader.style.display = 'flex';
+
+        setTimeout(() => {
+            loader.style.display = 'none';
+            staticThumb.style.opacity = '0';
+            gifPlayer.src = gifUrl;
+            gifPlayer.style.display = 'block';
+        }, 1500);
+
+        setTimeout(() => {
+            document.getElementById('popupContainer').classList.add('show-popup');
+        }, 5000);
+    };
+
+    window.closePopup = function() {
+        document.getElementById('popupContainer').classList.remove('show-popup');
+    };
+
+    window.watchAdAndPlay = function() {
+        const btn = document.getElementById('adButton');
+        
+        if (!AdController) {
+            alert("বর্তমানে কোনো বিজ্ঞাপন উপলব্ধ নেই। অ্যাডমিন প্যানেল চেক করুন।");
+            return;
         }
-    </script>
 
-    <script>
-        function switchTab(pageId, navElement) {
-            // টেলিগ্রাম ভাইব্রেশন
-            window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> অ্যাড লোড হচ্ছে...';
+        btn.disabled = true;
 
-            // সব পেজ হাইড করা
-            const pages = document.querySelectorAll('.page');
-            pages.forEach(page => page.classList.remove('active'));
+        AdController.show()
+            .then((result) => {
+                adsWatched++;
+                
+                if(adsWatched >= currentAdLimit) {
+                    closePopup();
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    
+                    if(currentMegaCloudLink && currentMegaCloudLink !== "#") {
+                        window.location.href = currentMegaCloudLink;
+                    } else {
+                        alert("এই ভিডিওটির মেগা ক্লাউড লিংক পাওয়া যায়নি!");
+                    }
+                } else {
+                    btn.innerHTML = `<i class="fas fa-play"></i> আরও ${currentAdLimit - adsWatched}টি অ্যাড দেখুন`;
+                    btn.disabled = false;
+                    alert(`আপনাকে আরও ${currentAdLimit - adsWatched}টি অ্যাড দেখতে হবে।`);
+                }
+            })
+            .catch((result) => {
+                alert("ভিডিও প্লে করতে হলে সম্পূর্ণ বিজ্ঞাপনটি দেখতে হবে!");
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
+    };
 
-            // সব নেভিগেশন আইকন থেকে অ্যাক্টিভ কালার সরানো
-            const navItems = document.querySelectorAll('.nav-item');
-            navItems.forEach(item => item.classList.remove('active'));
-
-            // সিলেক্ট করা পেজ এবং আইকন অ্যাক্টিভ করা
-            document.getElementById(pageId).classList.add('active');
-            navElement.classList.add('active');
-        }
-    </script>
-
+  } catch (error) {
+      console.error("Main Script Error: ", error.message);
+  }
+</script>
 </body>
 </html>
