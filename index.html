@@ -64,7 +64,6 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes pulseLock { 0% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.15); } 100% { transform: translate(-50%, -50%) scale(1); } }
         
-        /* নতুন ফেড-ইন অ্যানিমেশন */
         @keyframes fadeInUI { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
         .fade-in { animation: fadeInUI 0.3s ease-in-out; }
     </style>
@@ -85,7 +84,7 @@
         
         <div class="thumbnail-container" id="movieThumbContainer" onclick="playGifPreview('movie')">
             <img src="" alt="Thumbnail" id="movieThumb">
-            <i class="fas fa-lock lock-icon movie-lock" id="movieLockIcon"></i>
+            <i class="fas fa-lock lock-icon movie-lock"></i>
             <div id="movieGifBadge" class="gif-badge"><i class="fas fa-play" style="font-size: 10px;"></i> Play</div>
         </div>
         
@@ -114,7 +113,7 @@
 
         <div class="thumbnail-container" id="viralThumbContainer" onclick="playGifPreview('viral')">
             <img src="" alt="Thumbnail" id="viralThumb">
-            <i class="fas fa-lock lock-icon viral-lock" id="viralLockIcon"></i>
+            <i class="fas fa-lock lock-icon viral-lock"></i>
             <div id="viralGifBadge" class="gif-badge"><i class="fas fa-play" style="font-size: 10px;"></i> Play</div>
         </div>
         
@@ -244,7 +243,7 @@
 
                 container.innerHTML = `
                     <img src="${currentVideo.thumb || currentVideo.thumbnail}" alt="Thumbnail" id="${type}Thumb" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.85); transition: all 0.3s ease;">
-                    <i class="fas fa-lock lock-icon ${type}-lock" id="${type}LockIcon"></i>
+                    <i class="fas fa-lock lock-icon ${type}-lock"></i>
                     <div id="${type}GifBadge" class="gif-badge" style="display: ${currentVideo.gif ? 'block' : 'none'};"><i class="fas fa-play" style="font-size: 10px;"></i> Play</div>
                 `;
                 container.onclick = () => playGifPreview(type);
@@ -255,7 +254,6 @@
                 btn.innerHTML = `<i class="fas fa-play-circle"></i> অ্যাড (${data.adsWatched}/${requiredAdsCount})`;
                 btn.style.background = "linear-gradient(135deg, #3742fa, #5352ed)";
                 btn.disabled = false;
-                btn.onclick = () => handleAdClick(type);
                 
                 updateProgress(type);
             } catch(e) { console.error("UI Update Error: ", e); }
@@ -305,39 +303,29 @@
             safeHaptic('light');
         }
 
-        // 🔥 সংশোধিত লজিক: আনলক হওয়ার পর রিডাইরেক্ট করবে 🔥
+        // 🔥 এক্সটার্নাল লিংকে রিডাইরেক্ট করার লজিক 🔥
         function unlockVideoInline(type) {
             const currentVideo = state[type].list[state[type].index];
             const container = document.getElementById(`${type}ThumbContainer`);
-            const btn = document.getElementById(`${type}AdBtn`);
             
-            // আসল লিংক সংগ্রহ
+            container.onclick = null;
+            
+            // ডাটাবেস থেকে অরিজিনাল লিংক সংগ্রহ
             let videoLink = (currentVideo.link || currentVideo.megaLink || "").trim();
-            
-            // লিংক ওপেন করার ফাংশন
-            const openLink = () => {
-                if (tg && tg.openLink) {
-                    tg.openLink(videoLink);
-                } else {
-                    window.open(videoLink, '_blank');
-                }
-            };
 
-            // ডিজাইনে কোনো পরিবর্তন না করে শুধু ক্লিক ইভেন্ট পরিবর্তন করা হলো
-            container.onclick = openLink;
-            
-            // লক আইকনটি মুছে প্লে আইকন আনা হচ্ছে (ঐচ্ছিক, চাইলে আগের লকও রাখতে পারেন)
-            const lockIcon = document.getElementById(`${type}LockIcon`);
-            if(lockIcon) {
-                lockIcon.className = `fas fa-play-circle lock-icon ${type}-lock`;
-                lockIcon.style.color = "#2ed573";
-            }
+            // লক আইকন সরিয়ে একটি সিম্পল সাদা প্লে আইকন দেওয়া হচ্ছে এবং <a target="_blank"> দিয়ে ডিরেক্ট লিংক সেট করা হচ্ছে
+            container.innerHTML = `
+                <a href="${videoLink}" target="_blank" style="display:block; width:100%; height:100%; position:relative; text-decoration:none;">
+                    <img src="${currentVideo.thumb || currentVideo.thumbnail}" alt="Thumbnail" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6);">
+                    <i class="fas fa-play-circle" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 55px; color: #ffffff; text-shadow: 0 4px 15px rgba(0,0,0,0.5);"></i>
+                </a>
+            `;
 
-            // বাটন আপডেট
-            btn.innerHTML = '<i class="fas fa-external-link-alt"></i> ভিডিও দেখুন';
+            // নিচের বাটনটি আগের মতোই (আপনার অরিজিনাল কোডের মতো) থাকবে এবং আনলক হওয়ার পর ডিজেবল হয়ে যাবে
+            const btn = document.getElementById(`${type}AdBtn`);
+            btn.innerHTML = '<i class="fas fa-check-circle"></i> আনলক হয়েছে!';
             btn.style.background = "linear-gradient(135deg, #2ed573, #2bad60)";
-            btn.disabled = false; // বাটনটি এখন ক্লিকেবল
-            btn.onclick = openLink; // বাটনে ক্লিক করলেও রিডাইরেক্ট হবে
+            btn.disabled = true;
         }
 
         function handleAdClick(type) {
