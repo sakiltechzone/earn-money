@@ -22,7 +22,6 @@
             --text-muted: var(--tg-theme-hint-color, #a4b0be);
         }
 
-        /* স্ক্রল করার সুবিধার জন্য justify-content পরিবর্তন করা হয়েছে */
         body { font-family: 'Hind Siliguri', 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 20px 15px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; text-align: center; overflow-y: auto; }
 
         .brand-header h1 { font-family: 'Poppins', sans-serif; font-size: 26px; font-weight: 700; margin: 0 0 20px 0; background: var(--brand-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -51,7 +50,6 @@
         .progress-bar-bg { width: 100%; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
         .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #2ed573, #7bed9f); border-radius: 10px; transition: width 0.3s; }
 
-        /* বাটন গ্রুপে ৩টি বাটনের জন্য ডিজাইন আপডেট */
         .btn-group { display: flex; gap: 8px; width: 100%; }
         .btn { padding: 12px 5px; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; font-family: inherit; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.2s; }
         
@@ -65,6 +63,10 @@
         .loader { border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top: 3px solid #ff4757; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes pulseLock { 0% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.15); } 100% { transform: translate(-50%, -50%) scale(1); } }
+        
+        /* নতুন ফেড-ইন অ্যানিমেশন */
+        @keyframes fadeInUI { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        .fade-in { animation: fadeInUI 0.3s ease-in-out; }
     </style>
 </head>
 <body>
@@ -144,14 +146,14 @@
         tg.expand();
 
         const firebaseConfig = {
-  apiKey: "AIzaSyAl0eRqOs5QNUg_J1Pj-4PlEqRDxAXr-oA",
-  authDomain: "viral-zone-bd.firebaseapp.com",
-  databaseURL: "https://viral-zone-bd-default-rtdb.firebaseio.com",
-  projectId: "viral-zone-bd",
-  storageBucket: "viral-zone-bd.firebasestorage.app",
-  messagingSenderId: "794737483555",
-  appId: "1:794737483555:web:a275cd96aafff0e640f696"
-};
+            apiKey: "AIzaSyAl0eRqOs5QNUg_J1Pj-4PlEqRDxAXr-oA",
+            authDomain: "viral-zone-bd.firebaseapp.com",
+            databaseURL: "https://viral-zone-bd-default-rtdb.firebaseio.com",
+            projectId: "viral-zone-bd",
+            storageBucket: "viral-zone-bd.firebasestorage.app",
+            messagingSenderId: "794737483555",
+            appId: "1:794737483555:web:a275cd96aafff0e640f696"
+        };
 
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
@@ -159,12 +161,20 @@
         let adsController = null;
         let requiredAdsCount = 3;
 
-        // দুটি কার্ডের জন্য আলাদা স্টেট ম্যানেজমেন্ট
         const state = {
             movie: { list: [], index: 0, adsWatched: 0, dbNode: 'movie_videos' },
             viral: { list: [], index: 0, adsWatched: 0, dbNode: 'bot_videos' }
         };
         
+        // 🛡️ Safe Haptic Feedback (ক্র্যাশ ঠেকানোর জন্য)
+        function safeHaptic(style = 'light') {
+            try {
+                if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback && typeof window.Telegram.WebApp.HapticFeedback.impactOccurred === 'function') {
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred(style);
+                }
+            } catch(e) { console.log(e); }
+        }
+
         fetchData();
 
         function fetchData() {
@@ -184,26 +194,33 @@
                 }
             });
 
-            // মুভি ডেটা ফেচ
-            db.ref(state.movie.dbNode).orderByChild('timestamp').once('value', snap => {
+            // 🔥 রিয়েল-টাইম ডেটাবেস ফেচিং (on 'value') 🔥
+            db.ref(state.movie.dbNode).orderByChild('timestamp').on('value', snap => {
                 let temp = [];
-                snap.forEach(child => temp.push(child.val()));
+                snap.forEach(child => { temp.push(child.val()); });
                 state.movie.list = temp.reverse(); 
+                
                 if(state.movie.list.length > 0) {
+                    if(state.movie.index >= state.movie.list.length) state.movie.index = 0;
                     document.getElementById('movieCard').style.display = 'block';
                     updateUI('movie');
+                } else {
+                    document.getElementById('movieCard').style.display = 'none';
                 }
                 checkLoadingState();
             });
 
-            // ভাইরাল ভিডিও ডেটা ফেচ
-            db.ref(state.viral.dbNode).orderByChild('timestamp').once('value', snap => {
+            db.ref(state.viral.dbNode).orderByChild('timestamp').on('value', snap => {
                 let temp = [];
-                snap.forEach(child => temp.push(child.val()));
+                snap.forEach(child => { temp.push(child.val()); });
                 state.viral.list = temp.reverse(); 
+                
                 if(state.viral.list.length > 0) {
+                    if(state.viral.index >= state.viral.list.length) state.viral.index = 0;
                     document.getElementById('viralCard').style.display = 'block';
                     updateUI('viral');
+                } else {
+                    document.getElementById('viralCard').style.display = 'none';
                 }
                 checkLoadingState();
             });
@@ -214,29 +231,36 @@
         }
 
         function updateUI(type) {
-            const data = state[type];
-            if(data.list.length === 0) return;
-            const currentVideo = data.list[data.index];
-            
-            document.getElementById(`${type}Title`).innerText = currentVideo.title || "Untitled";
-            
-            // থাম্বনেইল ফ্রেম রিসেট
-            const container = document.getElementById(`${type}ThumbContainer`);
-            container.innerHTML = `
-                <img src="${currentVideo.thumb || currentVideo.thumbnail}" alt="Thumbnail" id="${type}Thumb" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.85); transition: all 0.3s ease;">
-                <i class="fas fa-lock lock-icon ${type}-lock"></i>
-                <div id="${type}GifBadge" class="gif-badge" style="display: ${currentVideo.gif ? 'block' : 'none'};"><i class="fas fa-play" style="font-size: 10px;"></i> Play</div>
-            `;
-            container.onclick = () => playGifPreview(type);
-            
-            data.adsWatched = 0;
-            
-            const btn = document.getElementById(`${type}AdBtn`);
-            btn.innerHTML = `<i class="fas fa-play-circle"></i> অ্যাড (${data.adsWatched}/${requiredAdsCount})`;
-            btn.style.background = "linear-gradient(135deg, #3742fa, #5352ed)";
-            btn.disabled = false;
-            
-            updateProgress(type);
+            try {
+                const data = state[type];
+                if(data.list.length === 0) return;
+                const currentVideo = data.list[data.index];
+                
+                document.getElementById(`${type}Title`).innerText = currentVideo.title || "Untitled";
+                
+                const container = document.getElementById(`${type}ThumbContainer`);
+                
+                // ফেড-ইন অ্যানিমেশন যুক্ত করা হলো
+                container.classList.remove('fade-in');
+                void container.offsetWidth; 
+                container.classList.add('fade-in');
+
+                container.innerHTML = `
+                    <img src="${currentVideo.thumb || currentVideo.thumbnail}" alt="Thumbnail" id="${type}Thumb" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.85); transition: all 0.3s ease;">
+                    <i class="fas fa-lock lock-icon ${type}-lock"></i>
+                    <div id="${type}GifBadge" class="gif-badge" style="display: ${currentVideo.gif ? 'block' : 'none'};"><i class="fas fa-play" style="font-size: 10px;"></i> Play</div>
+                `;
+                container.onclick = () => playGifPreview(type);
+                
+                data.adsWatched = 0;
+                
+                const btn = document.getElementById(`${type}AdBtn`);
+                btn.innerHTML = `<i class="fas fa-play-circle"></i> অ্যাড (${data.adsWatched}/${requiredAdsCount})`;
+                btn.style.background = "linear-gradient(135deg, #3742fa, #5352ed)";
+                btn.disabled = false;
+                
+                updateProgress(type);
+            } catch(e) { console.error("UI Update Error: ", e); }
         }
 
         function playGifPreview(type) {
@@ -249,28 +273,39 @@
                     imgElement.style.filter = "brightness(1)";
                 }
                 if(badgeElement) badgeElement.style.display = "none"; 
-                if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+                safeHaptic('light');
             }
         }
 
         function updateProgress(type) {
             document.getElementById(`${type}AdsWatched`).innerText = state[type].adsWatched;
             const percentage = (state[type].adsWatched / requiredAdsCount) * 100;
-            document.getElementById(`${type}ProgressFill`).style.width = percentage + '%';
+            document.getElementById(`${type}ProgressFill`).style.width = (percentage || 0) + '%';
         }
 
+        // 🔥 Next & Prev বাটন সল্যুশন 🔥
         function nextVideo(type) {
-            state[type].index++;
-            if(state[type].index >= state[type].list.length) state[type].index = 0; 
+            const data = state[type];
+            if (data.list.length <= 1) {
+                safeHaptic('error'); // ১টি ভিডিও থাকলে শুধু এরর ভাইব্রেশন হবে
+                return; 
+            }
+            data.index++;
+            if(data.index >= data.list.length) data.index = 0; 
             updateUI(type);
-            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+            safeHaptic('light');
         }
 
         function prevVideo(type) {
-            state[type].index--;
-            if(state[type].index < 0) state[type].index = state[type].list.length - 1; 
+            const data = state[type];
+            if (data.list.length <= 1) {
+                safeHaptic('error'); 
+                return; 
+            }
+            data.index--;
+            if(data.index < 0) data.index = data.list.length - 1; 
             updateUI(type);
-            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+            safeHaptic('light');
         }
 
         function unlockVideoInline(type) {
@@ -281,7 +316,6 @@
             
             let videoLink = currentVideo.link || currentVideo.megaLink;
             
-            // মেগা লিংক কনভার্ট
             if (videoLink && videoLink.includes('mega.nz/file/')) {
                 videoLink = videoLink.replace('mega.nz/file/', 'mega.nz/embed/');
             }
@@ -313,12 +347,12 @@
                     updateProgress(type);
                     
                     if (state[type].adsWatched >= requiredAdsCount) {
-                        if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+                        safeHaptic('success');
                         setTimeout(() => { unlockVideoInline(type); }, 500);
                     } else {
                         btn.disabled = false;
                         btn.innerHTML = `<i class="fas fa-play-circle"></i> অ্যাড (${state[type].adsWatched}/${requiredAdsCount})`;
-                        if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+                        safeHaptic('medium');
                     }
                 }).catch((result) => {
                     btn.disabled = false;
