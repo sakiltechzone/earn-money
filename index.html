@@ -64,7 +64,6 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes pulseLock { 0% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.15); } 100% { transform: translate(-50%, -50%) scale(1); } }
         
-        /* নতুন ফেড-ইন অ্যানিমেশন */
         @keyframes fadeInUI { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
         .fade-in { animation: fadeInUI 0.3s ease-in-out; }
     </style>
@@ -166,7 +165,6 @@
             viral: { list: [], index: 0, adsWatched: 0, dbNode: 'bot_videos' }
         };
         
-        // 🛡️ Safe Haptic Feedback (ক্র্যাশ ঠেকানোর জন্য)
         function safeHaptic(style = 'light') {
             try {
                 if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback && typeof window.Telegram.WebApp.HapticFeedback.impactOccurred === 'function') {
@@ -194,7 +192,6 @@
                 }
             });
 
-            // 🔥 রিয়েল-টাইম ডেটাবেস ফেচিং (on 'value') 🔥
             db.ref(state.movie.dbNode).orderByChild('timestamp').on('value', snap => {
                 let temp = [];
                 snap.forEach(child => { temp.push(child.val()); });
@@ -240,7 +237,6 @@
                 
                 const container = document.getElementById(`${type}ThumbContainer`);
                 
-                // ফেড-ইন অ্যানিমেশন যুক্ত করা হলো
                 container.classList.remove('fade-in');
                 void container.offsetWidth; 
                 container.classList.add('fade-in');
@@ -283,11 +279,10 @@
             document.getElementById(`${type}ProgressFill`).style.width = (percentage || 0) + '%';
         }
 
-        // 🔥 Next & Prev বাটন সল্যুশন 🔥
         function nextVideo(type) {
             const data = state[type];
             if (data.list.length <= 1) {
-                safeHaptic('error'); // ১টি ভিডিও থাকলে শুধু এরর ভাইব্রেশন হবে
+                safeHaptic('error'); 
                 return; 
             }
             data.index++;
@@ -308,26 +303,30 @@
             safeHaptic('light');
         }
 
+        // 🔥 সংশোধিত লজিক: প্লে আইকনে ক্লিক করলে শুধু রিডাইরেক্ট করবে 🔥
         function unlockVideoInline(type) {
             const currentVideo = state[type].list[state[type].index];
             const container = document.getElementById(`${type}ThumbContainer`);
             
-            container.onclick = null;
-            
-            let videoLink = currentVideo.link || currentVideo.megaLink;
-            
-            if (videoLink && videoLink.includes('mega.nz/file/')) {
-                videoLink = videoLink.replace('mega.nz/file/', 'mega.nz/embed/');
+            // ডাটাবেস থেকে অরিজিনাল লিংক সংগ্রহ
+            let videoLink = (currentVideo.link || currentVideo.megaLink || "").trim();
+
+            // মেগা লিংক হলে embed এর বদলে file করে দেওয়া হচ্ছে, যাতে সরাসরি ফাইলে নিয়ে যায়
+            if (videoLink.includes('mega.nz/embed/')) {
+                videoLink = videoLink.replace('mega.nz/embed/', 'mega.nz/file/');
+            } else if (videoLink.includes('mega.co.nz/embed/')) {
+                videoLink = videoLink.replace('mega.co.nz/embed/', 'mega.co.nz/file/');
             }
 
-            let isDirectVideo = videoLink && videoLink.match(/\.(mp4|webm|mkv|ogg)/i);
-            
-            if (isDirectVideo) {
-                container.innerHTML = `<video src="${videoLink}" controls autoplay playsinline style="width:100%; height:100%; border-radius:14px; object-fit:cover; background:#000;"></video>`;
-            } else {
-                container.innerHTML = `<iframe src="${videoLink}" frameborder="0" allowfullscreen="true" allow="autoplay; fullscreen" style="width:100%; height:100%; border-radius:14px; background:#000;"></iframe>`;
-            }
+            // <a> ট্যাগ দিয়ে একটি লিংকেবল প্লে আইকন তৈরি করা হচ্ছে
+            container.innerHTML = `
+                <a href="${videoLink}" style="display:block; width:100%; height:100%; position:relative; text-decoration:none;">
+                    <img src="${currentVideo.thumb || currentVideo.thumbnail}" alt="Thumbnail" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6);">
+                    <i class="fas fa-play-circle" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 60px; color: #ffffff; text-shadow: 0 0 20px rgba(0,0,0,0.6);"></i>
+                </a>
+            `;
 
+            // নিচের বাটনটি আগের মতোই "আনলক হয়েছে!" হয়ে ডিজেবল হয়ে যাবে
             const btn = document.getElementById(`${type}AdBtn`);
             btn.innerHTML = '<i class="fas fa-check-circle"></i> আনলক হয়েছে!';
             btn.style.background = "linear-gradient(135deg, #2ed573, #2bad60)";
