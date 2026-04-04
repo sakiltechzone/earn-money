@@ -142,20 +142,26 @@
     }
     const db = firebase.database();
 
-    let AdController = window.Adsgram ? window.Adsgram.init({ blockId: "26734" }) : null;
+    // হার্ডকোড করা আইডি সরিয়ে দেওয়া হয়েছে, এখন অ্যাডমিন প্যানেল থেকেই সেট হবে
+    let AdController = null; 
     let currentMegaCloudLink = ""; 
     let currentAdLimit = 1; 
     let adsWatched = 0; 
 
+    // অ্যাডমিন প্যানেল থেকে কনফিগারেশন লোড করার লজিক
     db.ref('siteConfig').on('value', (snap) => {
         const config = snap.val();
         if(config) {
+            // অ্যাডমিন প্যানেল থেকে ডাইনামিকভাবে Adsgram ID সেটআপ
             if(config.adsgramId && window.Adsgram) {
                 AdController = window.Adsgram.init({ blockId: config.adsgramId });
             }
+            // অ্যাডমিন প্যানেল থেকে ডাইনামিকভাবে Ad Limit সেটআপ
             if(config.adLimit) {
                 currentAdLimit = parseInt(config.adLimit);
             }
+            
+            // অন্যান্য হেড স্ক্রিপ্ট সেটআপ
             if(config.headScripts) {
                 const existingContainer = document.getElementById('adsterra-script-container');
                 if(existingContainer) existingContainer.remove();
