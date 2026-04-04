@@ -144,14 +144,14 @@
         tg.expand();
 
         const firebaseConfig = {
-            apiKey: "AIzaSyAl0eRqOs5QNUg_J1Pj-4PlEqRDxAXr-oA",
-            authDomain: "viral-zone-bd.firebaseapp.com",
-            projectId: "viral-zone-bd",
-            storageBucket: "viral-zone-bd.firebasestorage.app",
-            messagingSenderId: "794737483555",
-            appId: "1:794737483555:web:a275cd96aafff0e640f696",
-            databaseURL: "https://viral-zone-bd-default-rtdb.firebaseio.com"
-        };
+  apiKey: "AIzaSyAl0eRqOs5QNUg_J1Pj-4PlEqRDxAXr-oA",
+  authDomain: "viral-zone-bd.firebaseapp.com",
+  databaseURL: "https://viral-zone-bd-default-rtdb.firebaseio.com",
+  projectId: "viral-zone-bd",
+  storageBucket: "viral-zone-bd.firebasestorage.app",
+  messagingSenderId: "794737483555",
+  appId: "1:794737483555:web:a275cd96aafff0e640f696"
+};
 
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
