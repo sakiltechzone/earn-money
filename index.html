@@ -38,11 +38,9 @@
     
     .thumbnail { position: relative; width: 100%; padding-top: 56.25%; overflow: hidden; background: #000; cursor: pointer; }
     .thumbnail img.static-thumb { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-    .video-card:hover .thumbnail img.static-thumb { transform: scale(1.05); }
     
     .play-btn-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(4px); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 255, 255, 0.4); transition: all 0.3s ease; z-index: 2; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
     .play-btn-wrapper i { color: white; font-size: 22px; margin-left: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-    .video-card:hover .play-btn-wrapper { background: var(--accent-color); transform: translate(-50%, -50%) scale(1.1); border-color: var(--accent-color); }
     
     .duration-badge { position: absolute; bottom: 10px; right: 10px; background: rgba(0, 0, 0, 0.8); color: white; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; backdrop-filter: blur(2px); z-index: 3; }
     
@@ -57,7 +55,6 @@
     .spinner { width: 45px; height: 45px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #1e3c72; animation: spin 1s linear infinite; margin: 0 auto; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
     
-    /* --- পপআপ স্টাইল --- */
     .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); z-index: 1000; display: none; opacity: 0; transition: opacity 0.3s; }
     .popup-box { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 90%; max-width: 380px; background: white; border-radius: 20px; padding: 30px 25px; text-align: center; z-index: 1001; display: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); opacity: 0; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
     .popup-icon { width: 60px; height: 60px; background: #e3f2fd; color: #1e3c72; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 15px; }
@@ -138,22 +135,6 @@
             if(config.adLimit) {
                 currentAdLimit = parseInt(config.adLimit);
             }
-            if(config.headScripts) {
-                const existingContainer = document.getElementById('adsterra-script-container');
-                if(existingContainer) existingContainer.remove();
-                const scriptContainer = document.createElement('div');
-                scriptContainer.id = 'adsterra-script-container';
-                document.body.appendChild(scriptContainer);
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = config.headScripts;
-                const scripts = tempDiv.getElementsByTagName('script');
-                for (let i = 0; i < scripts.length; i++) {
-                    const newScript = document.createElement('script');
-                    if (scripts[i].src) newScript.src = scripts[i].src; 
-                    else newScript.innerHTML = scripts[i].innerHTML; 
-                    scriptContainer.appendChild(newScript);
-                }
-            }
         }
     });
 
@@ -172,19 +153,12 @@
                 });
                 videoList.reverse();
 
-                if(videoList.length === 0) {
-                     grid.innerHTML = "<p style='text-align:center; grid-column:1/-1; padding:20px;'>কোনো মুভি পাওয়া যায়নি।</p>";
-                     return;
-                }
-
                 let html = "";
                 videoList.forEach((v) => {
-                    const megaCloudLink = v.megaLink || "#"; 
-                    
                     html += `
                     <div class="video-card">
-                      <div class="thumbnail" id="thumb-${v.key}" onclick="playVideo('${v.key}', '${megaCloudLink}')">
-                        <img class="static-thumb" src="${v.thumbnail}" loading="lazy" alt="thumb" onerror="this.src='https://via.placeholder.com/320x180?text=No+Image'">
+                      <div class="thumbnail" id="thumb-${v.key}" onclick="playVideo('${v.key}', '${v.megaLink}')">
+                        <img class="static-thumb" src="${v.thumbnail}" loading="lazy" alt="thumb">
                         <div class="play-btn-wrapper"><i class="fas fa-play"></i></div>
                         <div class="duration-badge">${v.duration || '0:00'}</div>
                       </div>
@@ -198,8 +172,6 @@
                     </div>`;
                 });
                 grid.innerHTML = html;
-            } else {
-                grid.innerHTML = "<p style='text-align:center; grid-column:1/-1; padding:20px;'>ডাটাবেস খালি।</p>";
             }
         });
     }
@@ -217,71 +189,51 @@
         document.getElementById('popupContainer').classList.remove('show-popup');
     };
 
-    // 🔥 আপডেটেড ভিডিও প্লেয়ার (Sandbox যুক্ত করা হয়েছে) 🔥
+    // 🔥 ইন-লাইন প্লেয়ার (Sandbox মুক্ত করা হয়েছে যাতে আটক না থাকে) 🔥
     window.unlockVideoInline = function() {
         const container = document.getElementById(currentActiveCardId);
         if (!container) return;
         
         container.onclick = null;
-        
         let finalUrl = currentMegaCloudLink;
         
         if (finalUrl.includes('mega.nz/file/')) {
             finalUrl = finalUrl.replace('mega.nz/file/', 'mega.nz/embed/');
         }
 
-        let isDirectVideo = finalUrl.match(/\.(mp4|webm|mkv|ogg)/i);
-        
-        if (isDirectVideo) {
-            container.innerHTML = `<video src="${finalUrl}" controls autoplay playsinline style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; background: #000;"></video>`;
-        } else {
-            // sandbox অ্যাট্রিবিউট যোগ করা হয়েছে যাতে মেগা রিডাইরেক্ট করতে না পারে
-            container.innerHTML = `<iframe src="${finalUrl}" frameborder="0" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" sandbox="allow-scripts allow-same-origin allow-presentation" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000;"></iframe>`;
-        }
+        // আইফ্রেম লোড করা হচ্ছে
+        container.innerHTML = `<iframe src="${finalUrl}" frameborder="0" allowfullscreen="true" allow="autoplay; fullscreen" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000;"></iframe>`;
     };
 
     window.watchAdAndPlay = function() {
         const btn = document.getElementById('adButton');
-        
-        if (!AdController) {
-            alert("বর্তমানে কোনো বিজ্ঞাপন উপলব্ধ নেই। অ্যাডমিন প্যানেল থেকে Adsgram ID সেট করুন।");
-            return;
-        }
+        if (!AdController) return alert("বিজ্ঞাপন সিস্টেম লোড হয়নি!");
 
         const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> অ্যাড লোড হচ্ছে...';
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> লোড হচ্ছে...';
         btn.disabled = true;
 
         AdController.show()
             .then((result) => {
                 adsWatched++;
-                
                 if(adsWatched >= currentAdLimit) {
                     closePopup();
+                    unlockVideoInline();
                     btn.innerHTML = originalText;
                     btn.disabled = false;
-                    
-                    if(currentMegaCloudLink && currentMegaCloudLink !== "#") {
-                        unlockVideoInline();
-                    } else {
-                        alert("এই ভিডিওটির লিংক পাওয়া যায়নি!");
-                    }
                 } else {
                     btn.innerHTML = `<i class="fas fa-play"></i> আরও ${currentAdLimit - adsWatched}টি অ্যাড দেখুন`;
                     btn.disabled = false;
-                    alert(`আপনাকে আরও ${currentAdLimit - adsWatched}টি অ্যাড দেখতে হবে।`);
                 }
             })
-            .catch((result) => {
-                alert("ভিডিও প্লে করতে হলে সম্পূর্ণ বিজ্ঞাপনটি দেখতে হবে!");
+            .catch(() => {
+                alert("অ্যাডটি সম্পূর্ণ দেখুন!");
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             });
     };
 
-  } catch (error) {
-      console.error("Main Script Error: ", error.message);
-  }
+  } catch (error) { console.log(error); }
 </script>
 </body>
 </html>
