@@ -64,6 +64,7 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes pulseLock { 0% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.15); } 100% { transform: translate(-50%, -50%) scale(1); } }
         
+        /* নতুন ফেড-ইন অ্যানিমেশন */
         @keyframes fadeInUI { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
         .fade-in { animation: fadeInUI 0.3s ease-in-out; }
     </style>
@@ -100,12 +101,13 @@
             </div>
         </div>
 
-        <div class="btn-group" id="movieBtnGroup">
+        <div class="btn-group">
             <button class="btn btn-nav" onclick="prevVideo('movie')"><i class="fas fa-backward"></i> Prev</button>
             <button class="btn btn-nav" onclick="nextVideo('movie')">Next <i class="fas fa-forward"></i></button>
             <button class="btn btn-ad" id="movieAdBtn" onclick="handleAdClick('movie')"><i class="fas fa-play-circle"></i> অ্যাড দেখুন</button>
         </div>
     </div>
+
 
     <div class="card" id="viralCard" style="display: none;">
         <div class="card-header viral-title"><i class="fas fa-fire-alt"></i> Viral Zone</div>
@@ -128,7 +130,7 @@
             </div>
         </div>
 
-        <div class="btn-group" id="viralBtnGroup">
+        <div class="btn-group">
             <button class="btn btn-nav" onclick="prevVideo('viral')"><i class="fas fa-backward"></i> Prev</button>
             <button class="btn btn-nav" onclick="nextVideo('viral')">Next <i class="fas fa-forward"></i></button>
             <button class="btn btn-ad" id="viralAdBtn" onclick="handleAdClick('viral')"><i class="fas fa-play-circle"></i> অ্যাড দেখুন</button>
@@ -164,12 +166,13 @@
             viral: { list: [], index: 0, adsWatched: 0, dbNode: 'bot_videos' }
         };
         
+        // 🛡️ Safe Haptic Feedback (ক্র্যাশ ঠেকানোর জন্য)
         function safeHaptic(style = 'light') {
             try {
                 if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback && typeof window.Telegram.WebApp.HapticFeedback.impactOccurred === 'function') {
                     window.Telegram.WebApp.HapticFeedback.impactOccurred(style);
                 }
-            } catch(e) {}
+            } catch(e) { console.log(e); }
         }
 
         fetchData();
@@ -191,6 +194,7 @@
                 }
             });
 
+            // 🔥 রিয়েল-টাইম ডেটাবেস ফেচিং (on 'value') 🔥
             db.ref(state.movie.dbNode).orderByChild('timestamp').on('value', snap => {
                 let temp = [];
                 snap.forEach(child => { temp.push(child.val()); });
@@ -235,11 +239,12 @@
                 document.getElementById(`${type}Title`).innerText = currentVideo.title || "Untitled";
                 
                 const container = document.getElementById(`${type}ThumbContainer`);
+                
+                // ফেড-ইন অ্যানিমেশন যুক্ত করা হলো
                 container.classList.remove('fade-in');
                 void container.offsetWidth; 
                 container.classList.add('fade-in');
 
-                // থাম্বনেইল অংশ রিস্টোর করা হচ্ছে
                 container.innerHTML = `
                     <img src="${currentVideo.thumb || currentVideo.thumbnail}" alt="Thumbnail" id="${type}Thumb" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.85); transition: all 0.3s ease;">
                     <i class="fas fa-lock lock-icon ${type}-lock"></i>
@@ -249,16 +254,13 @@
                 
                 data.adsWatched = 0;
                 
-                // বাটন অংশ রিস্টোর করা হচ্ছে
-                const btnGroup = document.getElementById(`${type}BtnGroup`);
-                btnGroup.innerHTML = `
-                    <button class="btn btn-nav" onclick="prevVideo('${type}')"><i class="fas fa-backward"></i> Prev</button>
-                    <button class="btn btn-nav" onclick="nextVideo('${type}')">Next <i class="fas fa-forward"></i></button>
-                    <button class="btn btn-ad" id="${type}AdBtn" onclick="handleAdClick('${type}')"><i class="fas fa-play-circle"></i> অ্যাড (${data.adsWatched}/${requiredAdsCount})</button>
-                `;
+                const btn = document.getElementById(`${type}AdBtn`);
+                btn.innerHTML = `<i class="fas fa-play-circle"></i> অ্যাড (${data.adsWatched}/${requiredAdsCount})`;
+                btn.style.background = "linear-gradient(135deg, #3742fa, #5352ed)";
+                btn.disabled = false;
                 
                 updateProgress(type);
-            } catch(e) {}
+            } catch(e) { console.error("UI Update Error: ", e); }
         }
 
         function playGifPreview(type) {
@@ -281,9 +283,13 @@
             document.getElementById(`${type}ProgressFill`).style.width = (percentage || 0) + '%';
         }
 
+        // 🔥 Next & Prev বাটন সল্যুশন 🔥
         function nextVideo(type) {
             const data = state[type];
-            if (data.list.length <= 1) { safeHaptic('error'); return; }
+            if (data.list.length <= 1) {
+                safeHaptic('error'); // ১টি ভিডিও থাকলে শুধু এরর ভাইব্রেশন হবে
+                return; 
+            }
             data.index++;
             if(data.index >= data.list.length) data.index = 0; 
             updateUI(type);
@@ -292,43 +298,40 @@
 
         function prevVideo(type) {
             const data = state[type];
-            if (data.list.length <= 1) { safeHaptic('error'); return; }
+            if (data.list.length <= 1) {
+                safeHaptic('error'); 
+                return; 
+            }
             data.index--;
             if(data.index < 0) data.index = data.list.length - 1; 
             updateUI(type);
             safeHaptic('light');
         }
 
-        // 🔥 এক্সটার্নাল লিংকে রিডাইরেক্ট লজিক (সরাসরি ভিডিও পেজে নিয়ে যাবে) 🔥
         function unlockVideoInline(type) {
             const currentVideo = state[type].list[state[type].index];
             const container = document.getElementById(`${type}ThumbContainer`);
-            const btnGroup = document.getElementById(`${type}BtnGroup`);
             
-            // আসল লিংক সংগ্রহ
-            let videoLink = (currentVideo.link || currentVideo.megaLink || "").trim();
-
-            // ⚠️ মেগা ড্রাইভ ফিক্স ⚠️ 
-            // যদি লিংকে embed থাকে, তাহলে সেটাকে file এ কনভার্ট করা হচ্ছে। 
-            // এতে মেগা অ্যাপ হোম পেজে না গিয়ে সরাসরি ভিডিও পেজে (Open option) নিয়ে যাবে।
-            if (videoLink.includes('mega.nz/embed/')) {
-                videoLink = videoLink.replace('mega.nz/embed/', 'mega.nz/file/');
-            } else if (videoLink.includes('mega.co.nz/embed/')) {
-                videoLink = videoLink.replace('mega.co.nz/embed/', 'mega.co.nz/file/');
+            container.onclick = null;
+            
+            let videoLink = currentVideo.link || currentVideo.megaLink;
+            
+            if (videoLink && videoLink.includes('mega.nz/file/')) {
+                videoLink = videoLink.replace('mega.nz/file/', 'mega.nz/embed/');
             }
 
-            // <a> ট্যাগ দিয়ে লিংক করা হচ্ছে যাতে টেলিগ্রামের ভেতর আটকে না থেকে ডিরেক্ট অ্যাপ/ব্রাউজারে ওপেন হয়
-            container.innerHTML = `
-                <a href="${videoLink}" target="_blank" style="display:block; width:100%; height:100%; position:relative; text-decoration:none;">
-                    <img src="${currentVideo.thumb || currentVideo.thumbnail}" alt="Thumbnail" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6);">
-                    <i class="fas fa-play-circle" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 60px; color: #2ed573; text-shadow: 0 0 20px rgba(46, 213, 115, 0.6);"></i>
-                </a>
-            `;
+            let isDirectVideo = videoLink && videoLink.match(/\.(mp4|webm|mkv|ogg)/i);
+            
+            if (isDirectVideo) {
+                container.innerHTML = `<video src="${videoLink}" controls autoplay playsinline style="width:100%; height:100%; border-radius:14px; object-fit:cover; background:#000;"></video>`;
+            } else {
+                container.innerHTML = `<iframe src="${videoLink}" frameborder="0" allowfullscreen="true" allow="autoplay; fullscreen" style="width:100%; height:100%; border-radius:14px; background:#000;"></iframe>`;
+            }
 
-            // নিচের বাটনগুলো সরিয়ে শুধু একটি বড় "ভিডিও দেখুন" বাটন দেওয়া হচ্ছে, যেটাতে ক্লিক করলেও রিডাইরেক্ট হবে
-            btnGroup.innerHTML = `
-                <a href="${videoLink}" target="_blank" class="btn btn-ad" style="flex: 1; background: linear-gradient(135deg, #2ed573, #2bad60); text-decoration: none; font-size: 15px; box-shadow: 0 4px 15px rgba(46, 213, 115, 0.4);"><i class="fas fa-external-link-alt"></i> ভিডিও দেখুন</a>
-            `;
+            const btn = document.getElementById(`${type}AdBtn`);
+            btn.innerHTML = '<i class="fas fa-check-circle"></i> আনলক হয়েছে!';
+            btn.style.background = "linear-gradient(135deg, #2ed573, #2bad60)";
+            btn.disabled = true;
         }
 
         function handleAdClick(type) {
@@ -345,7 +348,7 @@
                     
                     if (state[type].adsWatched >= requiredAdsCount) {
                         safeHaptic('success');
-                        setTimeout(() => { unlockVideoInline(type); }, 300);
+                        setTimeout(() => { unlockVideoInline(type); }, 500);
                     } else {
                         btn.disabled = false;
                         btn.innerHTML = `<i class="fas fa-play-circle"></i> অ্যাড (${state[type].adsWatched}/${requiredAdsCount})`;
