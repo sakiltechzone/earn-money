@@ -3,295 +3,340 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Movie Zone</title>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>অ্যাডমিন প্যানেল | Premium & Viral Zone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Poppins', 'Hind Siliguri', sans-serif; padding: 20px; background: #eef2f5; margin: 0; color: #2d3436; }
+        body { font-family: 'Hind Siliguri', 'Poppins', sans-serif; background: #eef2f5; padding: 20px; margin: 0; color: #333; }
+        .container { max-width: 850px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { color: #2c3e50; font-size: 28px; margin: 0; }
+        .header p { color: #7f8c8d; margin-top: 5px; }
         
-        /* কন্টেইনার এবং লগইন স্ক্রিন */
-        .container { max-width: 900px; margin: 0 auto; }
-        #loginScreen { max-width: 400px; margin: 80px auto; text-align: center; }
-        #adminContent { display: none; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; border-top: 4px solid; }
+        .card-settings { border-top-color: #3742fa; } 
+        .card-movie { border-top-color: #fbc531; }
+        .card-viral { border-top-color: #ff4757; }
         
-        /* 🔥 হেডার স্টাইল (ছোট করা হয়েছে) 🔥 */
-        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 12px 20px; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); border-radius: 8px; color: white; box-shadow: 0 4px 10px rgba(30, 60, 114, 0.15); }
-        .admin-header h2 { margin: 0; font-weight: 700; letter-spacing: 1px; font-size: 18px; }
-        .btn-logout { background: #e74c3c; width: auto; padding: 6px 12px; font-size: 13px; margin: 0; border: none; border-radius: 4px; color: white; cursor: pointer; font-weight: bold;} 
-        .btn-logout:hover { background: #c0392b; }
+        h3 { margin-top: 0; color: #2c3e50; border-bottom: 2px solid #f0f2f5; padding-bottom: 10px; font-size: 18px; display: flex; justify-content: space-between; align-items: center; }
         
-        .card { background: white; padding: 20px 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border-top: 4px solid #2a5298; }
-        h3 { margin-top: 0; color: #1e3c72; font-weight: 600; }
-        label { font-weight: 600; font-size: 14px; color: #555; display: block; margin-top: 15px; margin-bottom: 5px; text-align: left; }
+        label { font-weight: 600; font-size: 14px; color: #555; display: block; margin-top: 15px; margin-bottom: 5px; }
+        input { width: 100%; padding: 12px; border: 1px solid #dcdde1; border-radius: 8px; box-sizing: border-box; font-family: inherit; transition: 0.3s; font-size: 14px;}
+        input:focus { outline: none; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+        .input-movie:focus { border-color: #fbc531; }
+        .input-viral:focus { border-color: #ff4757; }
+
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        button { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; color: white; font-weight: 600; font-family: inherit; transition: 0.3s; flex: 1; font-size: 15px; }
         
-        input, textarea { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-family: inherit; font-size: 14px; transition: 0.3s; margin-bottom: 10px; }
-        input:focus, textarea:focus { outline: none; border-color: #2a5298; box-shadow: 0 0 5px rgba(42, 82, 152, 0.2); }
-        textarea { height: 90px; resize: vertical; }
-        
-        button { padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; color: white; font-weight: bold; transition: 0.3s; font-size: 14px; margin-top: 10px; width: 100%; }
-        .btn-login { background: #1e3c72; } .btn-login:hover { background: #152a55; }
-        .btn-save { background: #27ae60; } .btn-save:hover { background: #219150; }
-        .btn-upload { background: #2a5298; } .btn-upload:hover { background: #1e3c72; }
+        .btn-settings { background: #3742fa; } .btn-settings:hover { background: #2f3640; }
+        .btn-movie { background: #e1b12c; color: #2d3436; } .btn-movie:hover { background: #fbc531; }
+        .btn-viral { background: #ff4757; } .btn-viral:hover { background: #ff3344; }
         .btn-cancel { background: #95a5a6; display: none; } .btn-cancel:hover { background: #7f8c8d; }
         
-        .video-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 12px 0; }
+        .video-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 15px 0; gap: 10px; }
         .video-item:last-child { border-bottom: none; }
-        .video-item img { width: 70px; height: 45px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; }
-        .video-details { flex-grow: 1; margin-left: 15px; text-align: left; }
-        .video-details b { font-size: 14px; color: #2d3436; }
-        .video-details small { color: #636e72; font-size: 12px; }
+        .video-info { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+        .video-info img { width: 70px; height: 45px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0; }
+        .video-details { flex: 1; min-width: 0; }
+        .video-details h4 { margin: 0 0 5px 0; font-size: 14px; color: #2f3640; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .video-details p { margin: 0; font-size: 12px; color: #7f8c8d; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        .action-buttons button { width: auto; margin-left: 5px; padding: 5px 10px; font-size: 12px; margin-top: 0; }
-        .btn-edit { background: #f39c12; } .btn-edit:hover { background: #d68910; }
-        .btn-del { background: #c0392b; } .btn-del:hover { background: #a93226; }
-        
-        .section-title { border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; text-align: left; }
+        .action-btns { display: flex; gap: 8px; flex-shrink: 0; }
+        .action-btns button { padding: 8px 12px; font-size: 13px; flex: none; border-radius: 6px; color: white; }
+        .btn-edit { background: #ffa502; } .btn-edit:hover { background: #e59400; }
+        .btn-delete { background: #e74c3c; } .btn-delete:hover { background: #c0392b; }
+
+        .video-count { padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: normal; color: white; }
+        .count-movie { background: #e1b12c; color: #333; font-weight: bold; }
+        .count-viral { background: #ff4757; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div id="loginScreen" class="card">
-            <h2 style="color: #1e3c72;">অ্যাডমিন লগইন</h2>
-            <p style="color: #7f8c8d; font-size: 14px; margin-bottom: 20px;">অ্যাডমিন প্যানেলে প্রবেশ করতে ইমেইল এবং পাসওয়ার্ড দিন</p>
-            <input type="email" id="adminEmail" placeholder="ইমেইল অ্যাড্রেস">
-            <input type="password" id="adminPassword" placeholder="পাসওয়ার্ড">
-            <button class="btn-login" onclick="loginAdmin()">লগইন করুন</button>
-            <p id="loginError" style="color: red; font-size: 13px; display: none; margin-top: 10px;"></p>
-        </div>
+<div class="container">
+    <div class="header">
+        <h1>Admin Panel <i class="fas fa-tools"></i></h1>
+        <p>Premium Movie Zone & Viral Zone BD</p>
+    </div>
 
-        <div id="adminContent">
-            <div class="admin-header">
-                <h2>PREMIUM MOVIE ZONE</h2>
-                <button class="btn-logout" onclick="logoutAdmin()">লগআউট</button>
-            </div>
-
-            <div class="card">
-                <h3 class="section-title">💎 Adsgram ও বিজ্ঞাপন সেটিংস</h3>
-                <label>🆔 Adsgram Block ID:</label>
-                <input type="text" id="adsgramId" placeholder="আপনার Adsgram Block ID দিন (যেমন: 123456)">
-                
-                <label>🎯 ভিডিও চালু করতে কয়টি অ্যাড দেখতে হবে? (Ad Limit):</label>
-                <input type="number" id="adLimit" placeholder="যেমন: 1 বা 2" value="1">
-
-                <label>🎭 গ্লোবাল স্ক্রিপ্ট (Popunder বা অন্য এড নেটওয়ার্ক):</label>
-                <textarea id="headScripts" placeholder="এখানে Adsterra পপঅন্ডার বা ভেরিফিকেশন কোড দিন..."></textarea>
-                
-                <button class="btn-save" onclick="saveAdSettings()">অ্যাড সেটিংস সেভ করুন</button>
-            </div>
-
-            <div class="card">
-                <h3 class="section-title" id="formTitle">🎬 মুভি / ভিডিও আপলোড করুন</h3>
-                <input type="hidden" id="editKey">
-                
-                <label>টাইটেল ও থাম্বনেইল (আবশ্যিক):</label>
-                <input type="text" id="v_title" placeholder="মুভির টাইটেল দিন">
-                <input type="text" id="v_thumb" placeholder="থাম্বনেইল ছবির লিংক">
-                
-                <label>☁️ Mega Cloud লিংক (আবশ্যিক):</label>
-                <input type="text" id="v_mega" placeholder="Mega Cloud মুভি লিংক দিন (অ্যাড দেখার পর এখানে যাবে)">
-
-                <label>GIF ও অন্যান্য তথ্য (ঐচ্ছিক):</label>
-                <input type="text" id="v_gif" placeholder="GIF লিংক (যদি থাকে)">
-                <div style="display:flex; gap:10px;">
-                    <input type="text" id="v_duration" placeholder="সময় (যেমন: 1:30:00)">
-                    <input type="text" id="v_views" placeholder="ভিউ (যেমন: 250K)">
-                    <input type="text" id="v_time" placeholder="আপলোড সময় (যেমন: 2 hours ago)">
-                </div>
-                
-                <button id="btnSubmit" class="btn-upload" onclick="handleVideoSubmit()">মুভি পোস্ট করুন</button>
-                <button id="btnCancel" class="btn-cancel" onclick="cancelEdit()">এডিট বাতিল করুন</button>
-            </div>
-
-            <div class="card">
-                <h3 class="section-title">📋 সকল আপলোড করা মুভি</h3>
-                <div id="videoList">লোড হচ্ছে...</div>
-            </div>
+    <div class="card card-settings">
+        <h3><i class="fas fa-cog" style="color: #3742fa;"></i> গ্লোবাল অ্যাড সেটিংস</h3>
+        
+        <label>Adsgram Block ID:</label>
+        <input type="text" id="setAdsgramId" placeholder="আপনার Adsgram ID দিন...">
+        
+        <label>ভিডিও আনলক করতে ইউজারকে কয়টি অ্যাড দেখতে হবে?</label>
+        <input type="number" id="setRequiredAds" placeholder="যেমন: 3" value="3">
+        
+        <div class="btn-group">
+            <button class="btn-settings" onclick="saveAdSettings()"><i class="fas fa-save"></i> অ্যাড সেটিংস সেভ করুন</button>
         </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script> 
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <div class="card card-movie">
+        <h3 id="formTitleMovie"><span style="color:#e1b12c;"><i class="fas fa-film"></i> মুভি আপলোড (Movie Zone)</span></h3>
+        <input type="hidden" id="editKeyMovie">
+        
+        <label>মুভির টাইটেল</label>
+        <input type="text" class="input-movie" id="mTitle" placeholder="যেমন: Aquaman 2 (2023) Hindi Dubbed">
+        
+        <label>থাম্বনেইল লিংক (ছবির লিংক)</label>
+        <input type="text" class="input-movie" id="mThumb" placeholder="ছবির লিংক দিন">
+        
+        <label>Mega Cloud / ভিডিও লিংক</label>
+        <input type="text" class="input-movie" id="mLink" placeholder="যেমন: https://mega.nz/file/...">
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBlRY15dg5BAsgWgLf7u2liQs4pFngZxz4",
-            authDomain: "newtaskbot.firebaseapp.com",
-            projectId: "newtaskbot",
-            storageBucket: "newtaskbot.firebasestorage.app",
-            messagingSenderId: "367409983642",
-            appId: "1:367409983642:web:1d46dc2e03b892aca8af23",
-            databaseURL: "https://newtaskbot-default-rtdb.firebaseio.com"
-        };
+        <div style="display:flex; gap:10px;">
+            <div style="flex:1;">
+                <label>ডিউরেশন</label>
+                <input type="text" class="input-movie" id="mDuration" placeholder="যেমন: 2:04:00">
+            </div>
+            <div style="flex:1;">
+                <label>ভিউ</label>
+                <input type="text" class="input-movie" id="mViews" placeholder="যেমন: 15K">
+            </div>
+            <div style="flex:1;">
+                <label>আপলোড সময়</label>
+                <input type="text" class="input-movie" id="mTime" placeholder="যেমন: 1 day ago">
+            </div>
+        </div>
+        
+        <div class="btn-group">
+            <button class="btn-movie" id="btnSaveMovie" onclick="saveData('movie')"><i class="fas fa-upload"></i> মুভি পাবলিশ করুন</button>
+            <button class="btn-cancel" id="btnCancelMovie" onclick="cancelEdit('movie')"><i class="fas fa-times"></i> বাতিল করুন</button>
+        </div>
 
-        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-        const auth = firebase.auth();
+        <h3 style="margin-top: 30px; font-size: 16px;">🎬 মুভি লিস্ট <span class="video-count count-movie" id="movieCounter">0 টি</span></h3>
+        <div id="movieList"><p style="text-align:center; color:#7f8c8d;">লোড হচ্ছে...</p></div>
+    </div>
 
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('adminContent').style.display = 'block';
-                loadAdminData(); 
-            } else {
-                document.getElementById('loginScreen').style.display = 'block';
-                document.getElementById('adminContent').style.display = 'none';
+
+    <div class="card card-viral">
+        <h3 id="formTitleViral"><span style="color:#ff4757;"><i class="fas fa-fire-alt"></i> ভাইরাল ভিডিও আপলোড (Viral Zone)</span></h3>
+        <input type="hidden" id="editKeyViral">
+        
+        <label>ভাইরাল ভিডিওর টাইটেল</label>
+        <input type="text" class="input-viral" id="vTitle" placeholder="যেমন: ভাইরাল স্ক্যান্ডাল ভিডিও পার্ট ১ 🔞">
+        
+        <label>থাম্বনেইল লিংক (ছবির লিংক)</label>
+        <input type="text" class="input-viral" id="vThumb" placeholder="ছবির লিংক দিন">
+
+        <label>GIF লিংক (হোভার/প্লে করলে যা দেখাবে - অপশনাল)</label>
+        <input type="text" class="input-viral" id="vGif" placeholder="GIF লিংক (যদি থাকে)">
+        
+        <label>আসল ভিডিওর লিংক</label>
+        <input type="text" class="input-viral" id="vLink" placeholder="যেমন: https://byse.sx/e/...">
+        
+        <div class="btn-group">
+            <button class="btn-viral" id="btnSaveViral" onclick="saveData('viral')"><i class="fas fa-upload"></i> ভাইরাল ভিডিও পাবলিশ করুন</button>
+            <button class="btn-cancel" id="btnCancelViral" onclick="cancelEdit('viral')"><i class="fas fa-times"></i> বাতিল করুন</button>
+        </div>
+
+        <h3 style="margin-top: 30px; font-size: 16px;">🔥 ভাইরাল ভিডিও লিস্ট <span class="video-count count-viral" id="viralCounter">0 টি</span></h3>
+        <div id="viralList"><p style="text-align:center; color:#7f8c8d;">লোড হচ্ছে...</p></div>
+    </div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyAl0eRqOs5QNUg_J1Pj-4PlEqRDxAXr-oA",
+        authDomain: "viral-zone-bd.firebaseapp.com",
+        projectId: "viral-zone-bd",
+        storageBucket: "viral-zone-bd.firebasestorage.app",
+        messagingSenderId: "794737483555",
+        appId: "1:794737483555:web:a275cd96aafff0e640f696",
+        databaseURL: "https://viral-zone-bd-default-rtdb.firebaseio.com"
+    };
+
+    let db;
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
+    
+    loadSettings(); 
+    loadList('movie', 'movie_videos'); // মুভি নোড
+    loadList('viral', 'bot_videos');   // ভাইরাল 노ড
+
+    // --- Global Settings ---
+    function saveAdSettings() {
+        const adsgramId = document.getElementById('setAdsgramId').value;
+        const requiredAds = document.getElementById('setRequiredAds').value;
+
+        db.ref('siteConfig').update({
+            adsgramId: adsgramId,
+            requiredAds: parseInt(requiredAds) || 3
+        }).then(() => alert("✅ গ্লোবাল অ্যাড সেটিংস আপডেট হয়েছে!"));
+    }
+
+    function loadSettings() {
+        db.ref('siteConfig').on('value', (snap) => {
+            const data = snap.val();
+            if(data) {
+                document.getElementById('setAdsgramId').value = data.adsgramId || "";
+                document.getElementById('setRequiredAds').value = data.requiredAds || 3;
             }
         });
+    }
 
-        function loginAdmin() {
-            const email = document.getElementById('adminEmail').value;
-            const password = document.getElementById('adminPassword').value;
-            const errorMsg = document.getElementById('loginError');
+    // --- Save Data (Movie & Viral) ---
+    function saveData(type) {
+        let key, data, dbNode;
+
+        if (type === 'movie') {
+            key = document.getElementById('editKeyMovie').value;
+            dbNode = 'movie_videos';
+            data = {
+                title: document.getElementById('mTitle').value,
+                thumbnail: document.getElementById('mThumb').value,
+                megaLink: document.getElementById('mLink').value,
+                duration: document.getElementById('mDuration').value || "0:00",
+                views: document.getElementById('mViews').value || "0",
+                time: document.getElementById('mTime').value || "New",
+                timestamp: Date.now()
+            };
+            if(!data.title || !data.thumbnail || !data.megaLink) return alert("মুভির টাইটেল, থাম্বনেইল এবং লিংক অবশ্যই দিন!");
+        } 
+        else if (type === 'viral') {
+            key = document.getElementById('editKeyViral').value;
+            dbNode = 'bot_videos';
+            data = {
+                title: document.getElementById('vTitle').value,
+                thumb: document.getElementById('vThumb').value,
+                gif: document.getElementById('vGif').value || "",
+                link: document.getElementById('vLink').value,
+                timestamp: Date.now()
+            };
+            if(!data.title || !data.thumb || !data.link) return alert("ভিডিওর টাইটেল, থাম্বনেইল এবং লিংক অবশ্যই দিন!");
+        }
+
+        if(key) {
+            db.ref(dbNode).child(key).update(data).then(() => {
+                alert(`✅ ${type === 'movie' ? 'মুভি' : 'ভিডিও'} আপডেট হয়েছে!`);
+                cancelEdit(type);
+            });
+        } else {
+            db.ref(dbNode).push(data).then(() => {
+                alert(`✅ নতুন ${type === 'movie' ? 'মুভি' : 'ভিডিও'} পাবলিশ হয়েছে!`);
+                cancelEdit(type);
+            });
+        }
+    }
+
+    // --- Load List ---
+    function loadList(type, dbNode) {
+        db.ref(dbNode).orderByChild('timestamp').on('value', (snap) => {
+            const list = document.getElementById(`${type}List`);
+            let html = "";
+            let count = 0;
+            let itemsArray = [];
+
+            snap.forEach(child => {
+                itemsArray.push({ key: child.key, ...child.val() });
+                count++;
+            });
             
-            if(!email || !password) {
-                errorMsg.innerText = "ইমেইল এবং পাসওয়ার্ড দিন!";
-                errorMsg.style.display = "block";
+            itemsArray.reverse();
+            document.getElementById(`${type}Counter`).innerText = count + " টি আপলোড হয়েছে";
+
+            if(count === 0) {
+                list.innerHTML = `<p style='text-align:center; color:#7f8c8d; padding:20px;'>কোনো ${type === 'movie' ? 'মুভি' : 'ভিডিও'} নেই।</p>`;
                 return;
             }
 
-            auth.signInWithEmailAndPassword(email, password)
-                .then(() => {
-                    errorMsg.style.display = "none";
-                    document.getElementById('adminEmail').value = "";
-                    document.getElementById('adminPassword').value = "";
-                })
-                .catch(() => {
-                    errorMsg.innerText = "লগইন ব্যর্থ হয়েছে! ইমেইল বা পাসওয়ার্ড ভুল।";
-                    errorMsg.style.display = "block";
-                });
-        }
+            itemsArray.forEach(item => {
+                const cleanData = JSON.stringify(item).replace(/"/g, '&quot;');
+                const thumbImg = item.thumb || item.thumbnail;
+                const linkTxt = item.link || item.megaLink;
 
-        function logoutAdmin() {
-            auth.signOut().then(() => alert("সফলভাবে লগআউট হয়েছে!"));
-        }
-
-        function loadAdminData() {
-            db.ref('siteConfig').on('value', (snap) => {
-                const config = snap.val();
-                if(config) {
-                    if(config.adsgramId) document.getElementById('adsgramId').value = config.adsgramId;
-                    if(config.adLimit) document.getElementById('adLimit').value = config.adLimit;
-                    if(config.headScripts) document.getElementById('headScripts').value = config.headScripts;
-                }
-            });
-
-            db.ref('videos').orderByChild('timestamp').on('value', (snap) => {
-                const list = document.getElementById('videoList');
-                list.innerHTML = "";
-                let html = "";
-                let videoArray = [];
-
-                snap.forEach(child => {
-                    const val = child.val();
-                    if(val && val.title) { videoArray.push({key: child.key, ...val}); }
-                });
-                videoArray.reverse();
-
-                if(videoArray.length === 0) {
-                    list.innerHTML = "কোনো মুভি আপলোড করা নেই।";
-                    return;
-                }
-
-                videoArray.forEach(v => {
-                    const cleanData = JSON.stringify(v).replace(/"/g, '&quot;');
-                    html += `
-                    <div class="video-item">
-                        <div style="display:flex; align-items:center;">
-                            <img src="${v.thumbnail}" onerror="this.src='https://via.placeholder.com/70x45'">
-                            <div class="video-details">
-                                <b>${v.title}</b><br>
-                                <small>👁️ ${v.views} | ☁️ Mega Link: ${v.megaLink ? 'Yes' : 'No'}</small>
-                            </div>
+                html += `
+                <div class="video-item">
+                    <div class="video-info">
+                        <img src="${thumbImg}" onerror="this.src='https://via.placeholder.com/80x50?text=No+Image'">
+                        <div class="video-details">
+                            <h4>${item.title}</h4>
+                            <p title="${linkTxt}">${linkTxt}</p>
                         </div>
-                        <div class="action-buttons">
-                            <button class="btn-edit" onclick="editVideo('${cleanData}')">Edit</button>
-                            <button class="btn-del" onclick="deleteVideo('${v.key}')">Del</button>
-                        </div>
-                    </div>`;
-                });
-                list.innerHTML = html;
+                    </div>
+                    <div class="action-btns">
+                        <button class="btn-edit" onclick="editData('${type}', '${cleanData}')"><i class="fas fa-edit"></i></button>
+                        <button class="btn-delete" onclick="deleteData('${dbNode}', '${item.key}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>`;
             });
-        }
-
-        function saveAdSettings() {
-            db.ref('siteConfig').update({
-                adsgramId: document.getElementById('adsgramId').value,
-                adLimit: document.getElementById('adLimit').value,
-                headScripts: document.getElementById('headScripts').value
-            }).then(() => alert('✅ Adsgram এবং বিজ্ঞাপন সেটিংস আপডেট হয়েছে!'));
-        }
-
-        function handleVideoSubmit() {
-            const key = document.getElementById('editKey').value;
-            const title = document.getElementById('v_title').value;
-            const thumbnail = document.getElementById('v_thumb').value;
-            const megaLink = document.getElementById('v_mega').value;
-            const gif = document.getElementById('v_gif').value || "";
-            const duration = document.getElementById('v_duration').value || "0:00";
-            const views = document.getElementById('v_views').value || "0";
-            const time = document.getElementById('v_time').value || "New";
-
-            if(!title || !thumbnail || !megaLink) {
-                return alert("❌ টাইটেল, থাম্বনেইল এবং মেগা ক্লাউড লিংক অবশ্যই দিতে হবে!");
-            }
-
-            const data = { title, thumbnail, megaLink, gif, duration, views, time, timestamp: Date.now() };
-
-            if(key) {
-                const updateData = {...data};
-                delete updateData.timestamp; 
-                db.ref('videos').child(key).update(updateData).then(() => { 
-                    alert('✅ মুভির তথ্য আপডেট হয়েছে!'); 
-                    cancelEdit(); 
-                }).catch(err => alert("Error: " + err.message));
-            } else {
-                db.ref('videos').push(data).then(() => { 
-                    alert('✅ নতুন মুভি পোস্ট হয়েছে!'); 
-                    cancelEdit(); 
-                }).catch(err => alert("Error: " + err.message));
-            }
-        }
-
-        function editVideo(jsonString) {
-            const data = JSON.parse(jsonString);
-            document.getElementById('editKey').value = data.key;
-            document.getElementById('v_title').value = data.title;
-            document.getElementById('v_thumb').value = data.thumbnail;
-            document.getElementById('v_mega').value = data.megaLink || '';
-            document.getElementById('v_gif').value = data.gif || '';
-            document.getElementById('v_duration').value = data.duration;
-            document.getElementById('v_views').value = data.views;
-            document.getElementById('v_time').value = data.time;
             
-            document.getElementById('formTitle').innerText = "✏️ মুভি এডিট করুন";
-            document.getElementById('btnSubmit').innerText = "আপডেট করুন";
-            document.getElementById('btnSubmit').style.background = "#f39c12";
-            document.getElementById('btnCancel').style.display = "block";
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+            list.innerHTML = html;
+        });
+    }
 
-        function cancelEdit() {
-            document.getElementById('editKey').value = "";
-            document.getElementById('v_title').value = "";
-            document.getElementById('v_thumb').value = "";
-            document.getElementById('v_mega').value = "";
-            document.getElementById('v_gif').value = "";
-            document.getElementById('v_duration').value = "";
-            document.getElementById('v_views').value = "";
-            document.getElementById('v_time').value = "";
-
-            document.getElementById('formTitle').innerText = "🎬 মুভি / ভিডিও আপলোড করুন";
-            document.getElementById('btnSubmit').innerText = "মুভি পোস্ট করুন";
-            document.getElementById('btnSubmit').style.background = "#2a5298";
-            document.getElementById('btnCancel').style.display = "none";
+    // --- Edit & Cancel ---
+    function editData(type, jsonString) {
+        const data = JSON.parse(jsonString);
+        
+        if (type === 'movie') {
+            document.getElementById('editKeyMovie').value = data.key;
+            document.getElementById('mTitle').value = data.title;
+            document.getElementById('mThumb').value = data.thumbnail || data.thumb;
+            document.getElementById('mLink').value = data.megaLink || data.link;
+            document.getElementById('mDuration').value = data.duration || '';
+            document.getElementById('mViews').value = data.views || '';
+            document.getElementById('mTime').value = data.time || '';
+            
+            document.getElementById('formTitleMovie').innerHTML = '<span style="color:#e1b12c;"><i class="fas fa-edit"></i> মুভি এডিট করুন</span>';
+            document.getElementById('btnSaveMovie').innerHTML = '<i class="fas fa-sync"></i> আপডেট করুন';
+            document.getElementById('btnCancelMovie').style.display = "block";
+            document.getElementById('formTitleMovie').scrollIntoView({ behavior: 'smooth' });
+        } 
+        else if (type === 'viral') {
+            document.getElementById('editKeyViral').value = data.key;
+            document.getElementById('vTitle').value = data.title;
+            document.getElementById('vThumb').value = data.thumb || data.thumbnail;
+            document.getElementById('vGif').value = data.gif || '';
+            document.getElementById('vLink').value = data.link || data.megaLink;
+            
+            document.getElementById('formTitleViral').innerHTML = '<span style="color:#ff4757;"><i class="fas fa-edit"></i> ভাইরাল এডিট করুন</span>';
+            document.getElementById('btnSaveViral').innerHTML = '<i class="fas fa-sync"></i> আপডেট করুন';
+            document.getElementById('btnCancelViral').style.display = "block";
+            document.getElementById('formTitleViral').scrollIntoView({ behavior: 'smooth' });
         }
+    }
 
-        function deleteVideo(key) {
-            if(confirm('আপনি কি নিশ্চিত এই মুভিটি ডিলিট করবেন?')) {
-                db.ref('videos').child(key).remove();
-            }
+    function cancelEdit(type) {
+        if (type === 'movie') {
+            document.getElementById('editKeyMovie').value = "";
+            document.getElementById('mTitle').value = "";
+            document.getElementById('mThumb').value = "";
+            document.getElementById('mLink').value = "";
+            document.getElementById('mDuration').value = "";
+            document.getElementById('mViews').value = "";
+            document.getElementById('mTime').value = "";
+            
+            document.getElementById('formTitleMovie').innerHTML = '<span style="color:#e1b12c;"><i class="fas fa-film"></i> মুভি আপলোড (Movie Zone)</span>';
+            document.getElementById('btnSaveMovie').innerHTML = '<i class="fas fa-upload"></i> মুভি পাবলিশ করুন';
+            document.getElementById('btnCancelMovie').style.display = "none";
+        } 
+        else if (type === 'viral') {
+            document.getElementById('editKeyViral').value = "";
+            document.getElementById('vTitle').value = "";
+            document.getElementById('vThumb').value = "";
+            document.getElementById('vGif').value = "";
+            document.getElementById('vLink').value = "";
+            
+            document.getElementById('formTitleViral').innerHTML = '<span style="color:#ff4757;"><i class="fas fa-fire-alt"></i> ভাইরাল ভিডিও আপলোড (Viral Zone)</span>';
+            document.getElementById('btnSaveViral').innerHTML = '<i class="fas fa-upload"></i> ভাইরাল ভিডিও পাবলিশ করুন';
+            document.getElementById('btnCancelViral').style.display = "none";
         }
-    </script>
+    }
+
+    // --- Delete Data ---
+    function deleteData(dbNode, key) {
+        if(confirm("আপনি কি নিশ্চিত যে এই আইটেমটি ডিলিট করতে চান?")) {
+            db.ref(dbNode).child(key).remove();
+        }
+    }
+</script>
 </body>
 </html>
