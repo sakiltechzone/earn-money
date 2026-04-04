@@ -39,9 +39,6 @@
         .lock-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 45px; animation: pulseLock 2s infinite; pointer-events: none; }
         .movie-lock { color: #fbc531; }
         .viral-lock { color: #ff4757; }
-        
-        /* আনলক হওয়ার পর প্লে আইকনের স্টাইল */
-        .play-icon-unlocked { color: #2ed573 !important; font-size: 60px !important; text-shadow: 0 0 20px rgba(46, 213, 115, 0.6); }
 
         .gif-badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: #fff; font-size: 12px; padding: 5px 10px; border-radius: 4px; border: 1px solid var(--brand-color); display: none; font-weight: 600; pointer-events: none; }
 
@@ -67,6 +64,7 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes pulseLock { 0% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.15); } 100% { transform: translate(-50%, -50%) scale(1); } }
         
+        /* নতুন ফেড-ইন অ্যানিমেশন */
         @keyframes fadeInUI { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
         .fade-in { animation: fadeInUI 0.3s ease-in-out; }
     </style>
@@ -173,7 +171,7 @@
                 if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback && typeof window.Telegram.WebApp.HapticFeedback.impactOccurred === 'function') {
                     window.Telegram.WebApp.HapticFeedback.impactOccurred(style);
                 }
-            } catch(e) {}
+            } catch(e) { console.log(e); }
         }
 
         fetchData();
@@ -239,11 +237,11 @@
                 document.getElementById(`${type}Title`).innerText = currentVideo.title || "Untitled";
                 
                 const container = document.getElementById(`${type}ThumbContainer`);
+                
                 container.classList.remove('fade-in');
                 void container.offsetWidth; 
                 container.classList.add('fade-in');
 
-                // UI রিসেট করা হচ্ছে (নতুন ভিডিও এলে আবার লক দেখাবে)
                 container.innerHTML = `
                     <img src="${currentVideo.thumb || currentVideo.thumbnail}" alt="Thumbnail" id="${type}Thumb" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.85); transition: all 0.3s ease;">
                     <i class="fas fa-lock lock-icon ${type}-lock" id="${type}LockIcon"></i>
@@ -257,7 +255,6 @@
                 btn.innerHTML = `<i class="fas fa-play-circle"></i> অ্যাড (${data.adsWatched}/${requiredAdsCount})`;
                 btn.style.background = "linear-gradient(135deg, #3742fa, #5352ed)";
                 btn.disabled = false;
-                // বাটনের পূর্ববর্তী onclick ইভেন্ট মুছে ডিফল্ট অ্যাড হ্যান্ডলার দেওয়া হচ্ছে
                 btn.onclick = () => handleAdClick(type);
                 
                 updateProgress(type);
@@ -286,7 +283,10 @@
 
         function nextVideo(type) {
             const data = state[type];
-            if (data.list.length <= 1) { safeHaptic('error'); return; }
+            if (data.list.length <= 1) {
+                safeHaptic('error'); 
+                return; 
+            }
             data.index++;
             if(data.index >= data.list.length) data.index = 0; 
             updateUI(type);
@@ -295,23 +295,27 @@
 
         function prevVideo(type) {
             const data = state[type];
-            if (data.list.length <= 1) { safeHaptic('error'); return; }
+            if (data.list.length <= 1) {
+                safeHaptic('error'); 
+                return; 
+            }
             data.index--;
             if(data.index < 0) data.index = data.list.length - 1; 
             updateUI(type);
             safeHaptic('light');
         }
 
-        // 🔥 নতুন রিডাইরেক্ট লজিক (কার্ডের ভেতর প্লে না হয়ে লিংকে নিয়ে যাবে) 🔥
-        function unlockVideoForRedirect(type) {
+        // 🔥 সংশোধিত লজিক: আনলক হওয়ার পর রিডাইরেক্ট করবে 🔥
+        function unlockVideoInline(type) {
             const currentVideo = state[type].list[state[type].index];
             const container = document.getElementById(`${type}ThumbContainer`);
+            const btn = document.getElementById(`${type}AdBtn`);
             
             // আসল লিংক সংগ্রহ
             let videoLink = (currentVideo.link || currentVideo.megaLink || "").trim();
             
-            // লিংক ওপেন করার ফাংশন (টেলিগ্রামের ইন-অ্যাপ ব্রাউজার বা সাধারণ ব্রাউজার)
-            const openVideoLink = () => {
+            // লিংক ওপেন করার ফাংশন
+            const openLink = () => {
                 if (tg && tg.openLink) {
                     tg.openLink(videoLink);
                 } else {
@@ -319,32 +323,27 @@
                 }
             };
 
-            // থাম্বনেইলের উপরে ক্লিক করলে রিডাইরেক্ট হবে
-            container.onclick = openVideoLink;
+            // ডিজাইনে কোনো পরিবর্তন না করে শুধু ক্লিক ইভেন্ট পরিবর্তন করা হলো
+            container.onclick = openLink;
             
-            // থাম্বনেইলের ছবিটা একটু ডার্ক করে বড় একটি সবুজ Play আইকন দেখানো হবে
-            const thumbImg = document.getElementById(`${type}Thumb`);
-            if(thumbImg) thumbImg.style.filter = "brightness(0.5)";
-            
+            // লক আইকনটি মুছে প্লে আইকন আনা হচ্ছে (ঐচ্ছিক, চাইলে আগের লকও রাখতে পারেন)
             const lockIcon = document.getElementById(`${type}LockIcon`);
             if(lockIcon) {
-                lockIcon.className = "fas fa-play-circle lock-icon play-icon-unlocked";
+                lockIcon.className = `fas fa-play-circle lock-icon ${type}-lock`;
+                lockIcon.style.color = "#2ed573";
             }
 
-            // নিচের বাটনটি পরিবর্তন হয়ে "ভিডিও দেখুন" হয়ে যাবে এবং ক্লিকেবল থাকবে
-            const btn = document.getElementById(`${type}AdBtn`);
+            // বাটন আপডেট
             btn.innerHTML = '<i class="fas fa-external-link-alt"></i> ভিডিও দেখুন';
             btn.style.background = "linear-gradient(135deg, #2ed573, #2bad60)";
-            btn.disabled = false; // বাটনটি এখন ক্লিক করা যাবে
-            btn.onclick = openVideoLink; // বাটনে ক্লিক করলেও রিডাইরেক্ট হবে
+            btn.disabled = false; // বাটনটি এখন ক্লিকেবল
+            btn.onclick = openLink; // বাটনে ক্লিক করলেও রিডাইরেক্ট হবে
         }
 
         function handleAdClick(type) {
             if(state[type].adsWatched >= requiredAdsCount) return;
             
             const btn = document.getElementById(`${type}AdBtn`);
-            const originalText = btn.innerHTML;
-            
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> লোড হচ্ছে...';
 
@@ -355,8 +354,7 @@
                     
                     if (state[type].adsWatched >= requiredAdsCount) {
                         safeHaptic('success');
-                        // অ্যাড দেখা শেষ হলে রিডাইরেক্ট লজিক কল হবে
-                        setTimeout(() => { unlockVideoForRedirect(type); }, 300);
+                        setTimeout(() => { unlockVideoInline(type); }, 500);
                     } else {
                         btn.disabled = false;
                         btn.innerHTML = `<i class="fas fa-play-circle"></i> অ্যাড (${state[type].adsWatched}/${requiredAdsCount})`;
