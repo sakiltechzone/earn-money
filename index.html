@@ -1,330 +1,362 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>PREMIUM MOVIE ZONE</title>
-  
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Viral Zone BD</title>
+    
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --brand-color: #ff4757;
+            --brand-gradient: linear-gradient(135deg, #ff6b81, #ff4757);
+            --bg-color: var(--tg-theme-bg-color, #121212);
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-main: var(--tg-theme-text-color, #ffffff);
+            --text-muted: var(--tg-theme-hint-color, #a4b0be);
+        }
 
-  <style>
-    :root { 
-      --primary-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); 
-      --card-bg: #ffffff; 
-      --bg-color: #f0f2f5; 
-      --text-dark: #2d3436; 
-      --text-light: #636e72; 
-      --accent-color: #e84393; 
-    }
-    * {box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent;}
-    body { font-family: 'Poppins', 'Hind Siliguri', sans-serif; background: var(--bg-color); min-height: 100vh; color: var(--text-dark); }
-    
-        .header { 
-        text-align: center; 
-        margin-bottom: 25px; 
-        /* এখানে উপরের প্যাডিং ২০px থেকে বাড়িয়ে ৫০px করা হয়েছে */
-        padding: 90px 15px 30px; 
-        background: var(--primary-gradient); 
-        color: white; 
-        box-shadow: 0 4px 15px rgba(30, 60, 114, 0.2); 
-        border-bottom-left-radius: 15px; 
-        border-bottom-right-radius: 15px; 
-        display: flex; 
-        justify-content: center; 
-        align-items: center; 
-    }
-    .glowing-title-btn { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #2d3436; background: #fdcb6e; border: none; border-radius: 30px; padding: 12px 30px; display: flex; align-items: center; gap: 10px; cursor: pointer; text-decoration: none; box-shadow: 0 0 15px rgba(253, 203, 110, 0.7); position: relative; overflow: hidden; transition: transform 0.2s, box-shadow 0.3s; animation: glowPulse 2s infinite; }
-    .glowing-title-btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(253, 203, 110, 0.9); }
-    .glowing-title-btn i { font-size: 20px; color: #2d3436; }
+        body { 
+            font-family: 'Hind Siliguri', 'Poppins', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            margin: 0; 
+            padding: 70px 20px 20px 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: flex-start; 
+            min-height: 100vh; 
+            text-align: center; 
+            box-sizing: border-box;
+        }
 
-    @keyframes glowPulse { 0% { box-shadow: 0 0 10px rgba(253, 203, 110, 0.6); } 50% { box-shadow: 0 0 25px rgba(253, 203, 110, 0.9); } 100% { box-shadow: 0 0 10px rgba(253, 203, 110, 0.6); } }
-    
-    .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: 20px; max-width: 1280px; margin: 0 auto; padding: 0 15px 50px 15px; }
-    
-    .video-card { background: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 20px -5px rgba(0, 0, 0, 0.08); transition: all 0.3s; cursor: pointer; position: relative; border: 1px solid rgba(255,255,255,0.8); }
-    .video-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.12); }
-    
-    .thumbnail { position: relative; width: 100%; padding-top: 56.25%; overflow: hidden; background: #000; }
-    .thumbnail img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-    .video-card:hover .thumbnail img.static-thumb { transform: scale(1.05); }
-    .thumbnail img.gif-player { display: none; filter: blur(5px) brightness(0.8); transform: scale(1.1); }
-    
-    .play-btn-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(4px); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 255, 255, 0.4); transition: all 0.3s ease; z-index: 2; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-    .play-btn-wrapper i { color: white; font-size: 22px; margin-left: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-    .video-card:hover .play-btn-wrapper { background: var(--accent-color); transform: translate(-50%, -50%) scale(1.1); border-color: var(--accent-color); }
-    
-    .duration-badge { position: absolute; bottom: 10px; right: 10px; background: rgba(0, 0, 0, 0.8); color: white; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; backdrop-filter: blur(2px); z-index: 3; }
-    
-    .video-info { padding: 12px 15px; } 
-    .video-title { font-size: 15px; font-weight: 600; line-height: 1.3; color: var(--text-dark); margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 39px; }
-    
-    .meta-tags { display: flex; justify-content: space-between; align-items: center; }
-    .meta-pill { display: flex; align-items: center; gap: 6px; background: #f1f3f5; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; color: var(--text-light); box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); }
-    .meta-pill i { color: #2a5298; font-size: 11px; }
-    .upload-time { font-size: 12px; color: #95a5a6; font-weight: 500; display: flex; align-items: center; gap: 4px; }
-    
-    .card-loader { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 10; display: none; }
-    .spinner { width: 45px; height: 45px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s linear infinite; }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-    
-    /* --- পপআপ স্টাইল --- */
-    .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); z-index: 1000; display: none; opacity: 0; transition: opacity 0.3s; }
-    .popup-box { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 90%; max-width: 380px; background: white; border-radius: 20px; padding: 30px 25px; text-align: center; z-index: 1001; display: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); opacity: 0; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
-    .popup-icon { width: 60px; height: 60px; background: #e3f2fd; color: #1e3c72; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 15px; }
-    .popup-box h3 { font-size: 18px; color: var(--text-dark); margin-bottom: 8px; font-weight: 700; }
-    .popup-box p { font-size: 13px; color: var(--text-light); margin-bottom: 25px; line-height: 1.5; }
-    .popup-actions { display: flex; flex-direction: column; gap: 10px; }
-    
-    .btn { width: 100%; padding: 12px; border: none; border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer; transition: transform 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .btn:active { transform: scale(0.98); }
-    .btn-ad { background: var(--primary-gradient); color: white; box-shadow: 0 4px 15px rgba(30, 60, 114, 0.4); }
-    .btn-cancel { background: #fff; color: #ff7675; margin-top: 5px; font-size: 13px; }
-    
-    .show-popup .popup-overlay { display: block; opacity: 1; }
-    .show-popup .popup-box { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        .notice-bar { 
+            position: fixed; 
+            top: 15px; 
+            left: 50%; 
+            transform: translateX(-50%);
+            width: calc(100% - 40px); 
+            max-width: 350px; 
+            background: linear-gradient(90deg, rgba(255, 71, 87, 0.15), rgba(255, 107, 129, 0.15)); 
+            border: 1px solid rgba(255, 71, 87, 0.4); 
+            border-radius: 50px; 
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 71, 87, 0.2); 
+            color: #ffffff; 
+            padding: 10px 15px; 
+            font-size: 13px; 
+            font-weight: 500; 
+            z-index: 1000; 
+            overflow: hidden; 
+            white-space: nowrap; 
+            display: none; 
+            backdrop-filter: blur(15px); 
+            -webkit-backdrop-filter: blur(15px);
+        }
+        .notice-scroll { display: inline-block; padding-left: 100%; animation: scrollText 15s linear infinite; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+        @keyframes scrollText { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-    /* 🔥 নতুন ইন-অ্যাপ ভিডিও প্লেয়ার স্টাইল 🔥 */
-    .in-app-player { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; flex-direction: column; }
-    .player-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #111; color: white; }
-    .player-header h3 { font-size: 16px; margin: 0; font-weight: 500; display: flex; align-items: center; gap: 8px; }
-    .close-player-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 16px; cursor: pointer; transition: 0.2s; }
-    .close-player-btn:active { transform: scale(0.9); }
-    .iframe-wrapper { flex-grow: 1; width: 100%; height: 100%; background: #000; }
-    .iframe-wrapper iframe { width: 100%; height: 100%; border: none; }
-  </style>
+        .banner-ad-container {
+            width: 100%;
+            max-width: 320px;
+            min-height: 50px;
+            margin: 15px auto;
+            display: none; /* বাই ডিফল্ট হাইড থাকবে, স্ক্রিপ্ট পেলে শো করবে */
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .brand-header h1 { font-family: 'Poppins', sans-serif; font-size: 26px; font-weight: 700; margin: 0 0 10px 0; background: var(--brand-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .card { background: var(--card-bg); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 20px; width: 100%; max-width: 360px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); margin-bottom: 5px; }
+
+        .thumbnail-container { position: relative; width: 100%; height: 200px; border-radius: 14px; overflow: hidden; background: #000; margin-bottom: 15px; cursor: pointer; }
+        .thumbnail-container img { width: 100%; height: 100%; object-fit: cover; filter: blur(0px) brightness(0.85); transition: all 0.3s ease; }
+        .lock-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 45px; color: var(--brand-color); animation: pulseLock 2s infinite; pointer-events: none; }
+        .gif-badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: #fff; font-size: 12px; padding: 5px 10px; border-radius: 4px; border: 1px solid var(--brand-color); display: none; font-weight: 600; pointer-events: none; }
+
+        h2 { margin: 0 0 5px 0; font-size: 18px; line-height: 1.4; height: 50px; overflow: hidden;}
+        
+        .progress-container { background: rgba(0, 0, 0, 0.3); border-radius: 12px; padding: 12px; margin-bottom: 20px; }
+        .progress-header { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; }
+        .progress-header span.highlight { color: #2ed573; font-weight: 700; }
+        .progress-bar-bg { width: 100%; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #2ed573, #7bed9f); border-radius: 10px; transition: width 0.3s; }
+
+        .btn-group { display: flex; gap: 8px; width: 100%; }
+        .btn { padding: 14px 5px; border: none; border-radius: 12px; font-weight: 600; font-family: inherit; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.2s; }
+        .btn-nav { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #dfe4ea; flex: 1; font-size: 14px; }
+        .btn-nav:active { background: rgba(255, 255, 255, 0.2); transform: scale(0.97); }
+        .btn-ad { background: linear-gradient(135deg, #3742fa, #5352ed); box-shadow: 0 4px 15px rgba(55, 66, 250, 0.4); flex: 2; font-size: 14px; }
+        .btn-ad:active { transform: scale(0.97); }
+        .btn-ad:disabled { background: #57606f; cursor: not-allowed; }
+
+        .loader { border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top: 3px solid #ff4757; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes pulseLock { 0% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.15); } 100% { transform: translate(-50%, -50%) scale(1); } }
+    </style>
 </head>
 <body>
 
-<div class="header">
-    <button class="glowing-title-btn">
-        <i class="fas fa-bolt"></i> Premium Movie Zone
-    </button>
-</div>
+    <div class="notice-bar" id="noticeBar">
+        <div class="notice-scroll" id="noticeText"></div>
+    </div>
 
-<div class="video-grid" id="mainGrid">
-  <div style="text-align:center; grid-column:1/-1; padding:50px;">
-    <div class="spinner" style="border-color:#1e3c72; border-top-color:transparent; margin:0 auto;"></div>
-    <p style="margin-top:15px; color:#636e72;">ভিডিও লোড হচ্ছে...</p>
-  </div>
-</div>
+    <div class="banner-ad-container" id="topBannerContainer"></div>
 
-<div id="popupContainer">
-    <div class="popup-overlay" onclick="closePopup()"></div>
-    <div class="popup-box">
-        <div class="popup-icon"><i class="fas fa-video"></i></div>
-        <h3>প্রিমিয়াম ভিডিও আনলক করুন</h3>
-        <p>সম্পূর্ণ মুভিটি প্লে করার জন্য একটি ছোট ভিডিও বিজ্ঞাপন দেখুন। বিজ্ঞাপন শেষ হলেই মুভি শুরু হবে।</p>
-        <div class="popup-actions">
-            <button class="btn btn-ad" id="adButton" onclick="watchAdAndPlay()"><i class="fas fa-play"></i> ভিডিও অ্যাড দেখুন</button>
-            <button class="btn btn-cancel" onclick="closePopup()">এখন না</button>
+    <div class="brand-header">
+        <h1>Viral Zone BD <i class="fas fa-fire" style="color:#ff4757;"></i></h1>
+    </div>
+
+    <div id="loadingDiv" style="text-align:center; padding: 50px;">
+        <div class="loader"></div>
+        <p style="margin-top:15px; color:#a4b0be; font-size:14px;">ভিডিও লোড হচ্ছে...</p>
+    </div>
+
+    <div class="card" id="videoCard" style="display: none;">
+        <div class="thumbnail-container" id="thumbContainer" onclick="playGifPreview()">
+            <img src="" alt="Thumbnail" id="videoThumb">
+            <i class="fas fa-lock lock-icon" id="lockIcon"></i>
+            <div id="gifBadge" class="gif-badge"><i class="fas fa-play" style="font-size: 10px;"></i> Play</div>
+        </div>
+        
+        <h2 id="videoTitle">লোড হচ্ছে...</h2>
+        
+        <div class="progress-container">
+            <div class="progress-header">
+                <span>আনলক স্ট্যাটাস</span>
+                <span class="highlight"><span id="adsWatched">0</span>/<span id="totalAdsNeeded">3</span> সম্পন্ন</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-nav" onclick="prevVideo()">
+                <i class="fas fa-backward"></i> Prev
+            </button>
+            <button class="btn btn-ad" id="watchAdBtn" onclick="handleAdClick()">
+                <i class="fas fa-play-circle"></i> অ্যাড দেখুন
+            </button>
+            <button class="btn btn-nav" onclick="nextVideo()">
+                Next <i class="fas fa-forward"></i>
+            </button>
         </div>
     </div>
-</div>
 
-<div id="inAppPlayer" class="in-app-player">
-    <div class="player-header">
-        <h3><i class="fas fa-film" style="color: var(--accent-color);"></i> Now Playing</h3>
-        <button class="close-player-btn" onclick="closeVideoPlayer()"><i class="fas fa-times"></i></button>
-    </div>
-    <div class="iframe-wrapper">
-        <iframe id="videoIframe" src="" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
-    </div>
-</div>
+    <div class="banner-ad-container" id="bottomBannerContainer"></div>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyBlRY15dg5BAsgWgLf7u2liQs4pFngZxz4",
-    authDomain: "newtaskbot.firebaseapp.com",
-    databaseURL: "https://newtaskbot-default-rtdb.firebaseio.com",
-    projectId: "newtaskbot",
-    storageBucket: "newtaskbot.firebasestorage.app",
-    messagingSenderId: "367409983642",
-    appId: "1:367409983642:web:1d46dc2e03b892aca8af23"
-  };
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
 
-  try {
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.database();
+        const firebaseConfig = {
+            apiKey: "AIzaSyAl0eRqOs5QNUg_J1Pj-4PlEqRDxAXr-oA",
+            authDomain: "viral-zone-bd.firebaseapp.com",
+            projectId: "viral-zone-bd",
+            storageBucket: "viral-zone-bd.firebasestorage.app",
+            messagingSenderId: "794737483555",
+            appId: "1:794737483555:web:a275cd96aafff0e640f696",
+            databaseURL: "https://viral-zone-bd-default-rtdb.firebaseio.com"
+        };
 
-    // হার্ডকোড করা আইডি সরিয়ে দেওয়া হয়েছে, এখন অ্যাডমিন প্যানেল থেকেই সেট হবে
-    let AdController = null; 
-    let currentMegaCloudLink = ""; 
-    let currentAdLimit = 1; 
-    let adsWatched = 0; 
+        let db;
+        let siteConfig = { adsgramId: "", requiredAds: 3, noticeText: "", bannerScript: "" };
+        let requiredAdsCount = 3;
+        let videos = [];
+        let currentIndex = 0;
+        let adsWatchedCount = 0;
+        let adsController = null;
 
-    // অ্যাডমিন প্যানেল থেকে কনফিগারেশন লোড করার লজিক
-    db.ref('siteConfig').on('value', (snap) => {
-        const config = snap.val();
-        if(config) {
-            // অ্যাডমিন প্যানেল থেকে ডাইনামিকভাবে Adsgram ID সেটআপ
-            if(config.adsgramId && window.Adsgram) {
-                AdController = window.Adsgram.init({ blockId: config.adsgramId });
-            }
-            // অ্যাডমিন প্যানেল থেকে ডাইনামিকভাবে Ad Limit সেটআপ
-            if(config.adLimit) {
-                currentAdLimit = parseInt(config.adLimit);
-            }
-            
-            // অন্যান্য হেড স্ক্রিপ্ট সেটআপ
-            if(config.headScripts) {
-                const existingContainer = document.getElementById('adsterra-script-container');
-                if(existingContainer) existingContainer.remove();
-                const scriptContainer = document.createElement('div');
-                scriptContainer.id = 'adsterra-script-container';
-                document.body.appendChild(scriptContainer);
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = config.headScripts;
-                const scripts = tempDiv.getElementsByTagName('script');
-                for (let i = 0; i < scripts.length; i++) {
-                    const newScript = document.createElement('script');
-                    if (scripts[i].src) newScript.src = scripts[i].src; 
-                    else newScript.innerHTML = scripts[i].innerHTML; 
-                    scriptContainer.appendChild(newScript);
-                }
-            }
-        }
-    });
-
-    function loadVideosSafe() {
-        db.ref('videos').orderByChild('timestamp').once('value')
-        .then((snapshot) => {
-            const grid = document.getElementById('mainGrid');
-            if(snapshot.exists()){
-                let videoList = [];
-                snapshot.forEach(c => {
-                    const val = c.val();
-                    if(val && val.title) videoList.push(val);
-                });
-                videoList.reverse();
-
-                if(videoList.length === 0) {
-                     grid.innerHTML = "<p style='text-align:center; grid-column:1/-1; padding:20px;'>কোনো মুভি পাওয়া যায়নি।</p>";
-                     return;
-                }
-
-                let html = "";
-                videoList.forEach((v) => {
-                    const gifSrc = v.gif || v.thumbnail;
-                    const megaCloudLink = v.megaLink || "#"; 
-
-                    html += `
-                    <div class="video-card" onclick="playVideo(this, '${gifSrc}', '${megaCloudLink}')">
-                      <div class="thumbnail">
-                        <img class="static-thumb" src="${v.thumbnail}" loading="lazy" alt="thumb" onerror="this.src='https://via.placeholder.com/320x180?text=No+Image'">
-                        <img class="gif-player" src="" alt="preview">
-                        <div class="play-btn-wrapper"><i class="fas fa-play"></i></div>
-                        <div class="card-loader"><div class="spinner"></div></div>
-                        <div class="duration-badge">${v.duration || '0:00'}</div>
-                      </div>
-                      <div class="video-info">
-                        <h3 class="video-title">${v.title}</h3>
-                        <div class="meta-tags">
-                            <div class="meta-pill"><i class="fas fa-eye"></i> ${v.views || '0'}</div>
-                            <div class="upload-time"><i class="far fa-clock"></i> ${v.time || 'New'}</div>
-                        </div>
-                      </div>
-                    </div>`;
-                });
-                grid.innerHTML = html;
-            } else {
-                grid.innerHTML = "<p style='text-align:center; grid-column:1/-1; padding:20px;'>ডাটাবেস খালি।</p>";
-            }
-        });
-    }
-
-    loadVideosSafe();
-
-    window.playVideo = function(card, gifUrl, megaLink) {
-        const loader = card.querySelector('.card-loader');
-        const staticThumb = card.querySelector('.static-thumb');
-        const gifPlayer = card.querySelector('.gif-player');
-        const playBtn = card.querySelector('.play-btn-wrapper');
-
-        currentMegaCloudLink = megaLink;
-        adsWatched = 0; 
-
-        playBtn.style.opacity = '0';
-        loader.style.display = 'flex';
-
-        setTimeout(() => {
-            loader.style.display = 'none';
-            staticThumb.style.opacity = '0';
-            gifPlayer.src = gifUrl;
-            gifPlayer.style.display = 'block';
-        }, 1500);
-
-        setTimeout(() => {
-            document.getElementById('popupContainer').classList.add('show-popup');
-        }, 5000);
-    };
-
-    window.closePopup = function() {
-        document.getElementById('popupContainer').classList.remove('show-popup');
-    };
-
-    // 🔥 ইন-অ্যাপ ভিডিও প্লেয়ার ওপেন করার ফাংশন 🔥
-    window.openVideoPlayer = function(url) {
-        document.getElementById('inAppPlayer').style.display = 'flex';
-        document.getElementById('videoIframe').src = url;
-    };
-
-    // 🔥 ইন-অ্যাপ ভিডিও প্লেয়ার বন্ধ করার ফাংশন 🔥
-    window.closeVideoPlayer = function() {
-        document.getElementById('inAppPlayer').style.display = 'none';
-        document.getElementById('videoIframe').src = ""; // ভিডিও প্লে বন্ধ করতে সোর্স ক্লিয়ার
-    };
-
-    window.watchAdAndPlay = function() {
-        const btn = document.getElementById('adButton');
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        db = firebase.database();
         
-        if (!AdController) {
-            alert("বর্তমানে কোনো বিজ্ঞাপন উপলব্ধ নেই। অ্যাডমিন প্যানেল থেকে Adsgram ID সেট করুন।");
-            return;
+        fetchData();
+
+        function renderBannerAd(containerId, scriptHtml) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = ''; 
+            const iframe = document.createElement('iframe');
+            iframe.width = '320';
+            iframe.height = '50';
+            iframe.style.border = 'none';
+            iframe.scrolling = 'no';
+            iframe.srcdoc = `<!DOCTYPE html><html><head><style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;background:transparent;}</style></head><body>${scriptHtml}</body></html>`;
+            container.appendChild(iframe);
+            container.style.display = 'flex';
         }
 
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> অ্যাড লোড হচ্ছে...';
-        btn.disabled = true;
+        function fetchData() {
+            db.ref('siteConfig').on('value', snap => {
+                if(snap.val()) {
+                    siteConfig = snap.val();
+                    requiredAdsCount = parseInt(siteConfig.requiredAds) || 3;
+                    document.getElementById('totalAdsNeeded').innerText = requiredAdsCount;
 
-        AdController.show()
-            .then((result) => {
-                adsWatched++;
-                
-                if(adsWatched >= currentAdLimit) {
-                    closePopup();
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                    
-                    if(currentMegaCloudLink && currentMegaCloudLink !== "#") {
-                        // 🔥 রিডাইরেক্টের বদলে ইন-অ্যাপ প্লেয়ার ওপেন হবে 🔥
-                        openVideoPlayer(currentMegaCloudLink);
+                    // Notice Text Logic
+                    if(siteConfig.noticeText && siteConfig.noticeText.trim() !== "") {
+                        document.getElementById('noticeText').innerHTML = `<i class="fas fa-bullhorn" style="color: #ff4757;"></i> &nbsp; ${siteConfig.noticeText} &nbsp; <i class="fas fa-fire" style="color: #ff4757;"></i>`;
+                        document.getElementById('noticeBar').style.display = 'block';
                     } else {
-                        alert("এই ভিডিওটির মেগা ক্লাউড লিংক পাওয়া যায়নি!");
+                        document.getElementById('noticeBar').style.display = 'none';
                     }
-                } else {
-                    btn.innerHTML = `<i class="fas fa-play"></i> আরও ${currentAdLimit - adsWatched}টি অ্যাড দেখুন`;
-                    btn.disabled = false;
-                    alert(`আপনাকে আরও ${currentAdLimit - adsWatched}টি অ্যাড দেখতে হবে।`);
-                }
-            })
-            .catch((result) => {
-                alert("ভিডিও প্লে করতে হলে সম্পূর্ণ বিজ্ঞাপনটি দেখতে হবে!");
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            });
-    };
 
-  } catch (error) {
-      console.error("Main Script Error: ", error.message);
-  }
-</script>
+                    // Banner Ad Logic
+                    if(siteConfig.bannerScript && siteConfig.bannerScript.trim() !== "") {
+                        renderBannerAd('topBannerContainer', siteConfig.bannerScript);
+                        renderBannerAd('bottomBannerContainer', siteConfig.bannerScript);
+                    } else {
+                        document.getElementById('topBannerContainer').style.display = 'none';
+                        document.getElementById('bottomBannerContainer').style.display = 'none';
+                    }
+
+                    // Adsgram Logic
+                    if(siteConfig.adsgramId && !adsController) {
+                        try {
+                            adsController = window.Adsgram.init({ blockId: siteConfig.adsgramId });
+                        } catch(e) { console.error("Adsgram Error", e); }
+                    }
+                    updateProgress();
+                }
+            });
+
+            db.ref('bot_videos').orderByChild('timestamp').once('value', snap => {
+                let tempVideos = [];
+                snap.forEach(child => { tempVideos.push(child.val()); });
+                videos = tempVideos.reverse(); 
+                
+                if(videos.length > 0) {
+                    document.getElementById('loadingDiv').style.display = 'none';
+                    document.getElementById('videoCard').style.display = 'block';
+                    updateUI();
+                } else {
+                    document.getElementById('loadingDiv').innerHTML = "<p style='color:#ff4757;'>অ্যাডমিন প্যানেলে কোনো ভিডিও নেই!</p>";
+                }
+            });
+        }
+
+        function updateUI() {
+            if(videos.length === 0) return;
+            const currentVideo = videos[currentIndex];
+            
+            document.getElementById('videoTitle').innerText = currentVideo.title;
+            
+            const container = document.getElementById('thumbContainer');
+            container.innerHTML = `
+                <img src="${currentVideo.thumb}" alt="Thumbnail" id="videoThumb" style="width: 100%; height: 100%; object-fit: cover; filter: blur(0px) brightness(0.85); transition: all 0.3s ease;">
+                <i class="fas fa-lock lock-icon" id="lockIcon"></i>
+                <div id="gifBadge" class="gif-badge" style="display: ${currentVideo.gif ? 'block' : 'none'};"><i class="fas fa-play" style="font-size: 10px;"></i> Play</div>
+            `;
+            container.onclick = playGifPreview;
+            
+            adsWatchedCount = 0;
+            
+            const btn = document.getElementById('watchAdBtn');
+            btn.innerHTML = `<i class="fas fa-play-circle"></i> অ্যাড দেখুন (0/${requiredAdsCount})`;
+            btn.style.background = "linear-gradient(135deg, #3742fa, #5352ed)";
+            btn.disabled = false;
+            
+            updateProgress();
+        }
+
+        function playGifPreview() {
+            const currentVideo = videos[currentIndex];
+            if(currentVideo.gif) {
+                const imgElement = document.getElementById('videoThumb');
+                const badgeElement = document.getElementById('gifBadge');
+                if(imgElement) {
+                    imgElement.src = currentVideo.gif;
+                    imgElement.style.filter = "blur(0px) brightness(1)";
+                }
+                if(badgeElement) badgeElement.style.display = "none"; 
+                if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+            }
+        }
+
+        function updateProgress() {
+            document.getElementById('adsWatched').innerText = adsWatchedCount;
+            const percentage = (adsWatchedCount / requiredAdsCount) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+        }
+
+        function nextVideo() {
+            currentIndex++;
+            if(currentIndex >= videos.length) currentIndex = 0; 
+            updateUI();
+            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+        }
+
+        function prevVideo() {
+            currentIndex--;
+            if(currentIndex < 0) currentIndex = videos.length - 1; 
+            updateUI();
+            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+        }
+
+        function unlockVideoInline() {
+            const currentVideo = videos[currentIndex];
+            const container = document.getElementById('thumbContainer');
+            
+            container.onclick = null;
+            
+            let isDirectVideo = currentVideo.link.match(/\.(mp4|webm|mkv|ogg)/i);
+            
+            if (isDirectVideo) {
+                container.innerHTML = `<video src="${currentVideo.link}" controls autoplay playsinline style="width:100%; height:100%; border-radius:14px; object-fit:cover; background:#000;"></video>`;
+            } else {
+                container.innerHTML = `<iframe src="${currentVideo.link}" frameborder="0" allowfullscreen style="width:100%; height:100%; border-radius:14px; background:#000;"></iframe>`;
+            }
+
+            const btn = document.getElementById('watchAdBtn');
+            btn.innerHTML = '<i class="fas fa-check-circle"></i> ভিডিও আনলক হয়েছে!';
+            btn.style.background = "linear-gradient(135deg, #2ed573, #2bad60)";
+            btn.disabled = true;
+        }
+
+        function handleAdClick() {
+            if(adsWatchedCount >= requiredAdsCount) { return; }
+            showAdsgram();
+        }
+
+        function showAdsgram() {
+            const btn = document.getElementById('watchAdBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> লোড হচ্ছে...';
+
+            if (adsController) {
+                adsController.show().then((result) => {
+                    adsWatchedCount++;
+                    updateProgress();
+                    
+                    if (adsWatchedCount >= requiredAdsCount) {
+                        if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+                        setTimeout(() => { unlockVideoInline(); }, 500);
+                    } else {
+                        btn.disabled = false;
+                        btn.innerHTML = `<i class="fas fa-play-circle"></i> অ্যাড দেখুন (${adsWatchedCount}/${requiredAdsCount})`;
+                        if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+                    }
+                }).catch((result) => {
+                    btn.disabled = false;
+                    btn.innerHTML = `<i class="fas fa-play-circle"></i> অ্যাড দেখুন (${adsWatchedCount}/${requiredAdsCount})`;
+                    tg.showAlert("⚠️ আপনি অ্যাডটি সম্পূর্ণ দেখেননি বা লোড হয়নি। আবার চেষ্টা করুন।");
+                });
+            } else {
+                tg.showAlert("অ্যাড সিস্টেম লোড হয়নি। অ্যাডমিন প্যানেলে Adsgram ID সেট করা আছে কি না চেক করুন।");
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fas fa-play-circle"></i> অ্যাড দেখুন (${adsWatchedCount}/${requiredAdsCount})`;
+            }
+        }
+    </script>
 </body>
 </html>
